@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz Slide</title>
+    
+    <link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section>
+                    <h1>ボーナスクイズ</h1>
+                </section>
+                <section data-markdown>
+                    <textarea data-template>
+                        <!-- .slide: data-state="with-timer" data-limit="15" -->
+                        <!-- .slide: class="quiz sort text-4taku" -->
+                        # 高い順に並べて
+
+                        1. 台北101
+                        2. 東京スカイツリー
+                        3. 東京タワー
+                        4. あべのハルカス
+                    </textarea>
+                </section>
+                <section>
+                    <!-- チャンピオンの回答 -->
+                </section>
+                <section>
+                    <!-- 答え合わせ① -->
+                </section>
+                <section>
+                    <!-- 正解 or 残念 -->
+                </section>
+                <section data-markdown>
+                    <textarea data-template>
+                        <!-- 解説 -->
+                        1. 509.2m
+                        2. 634m
+                        3. 333m
+                        4. 300m
+                    </textarea>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import Reveal from './node_modules/reveal.js/dist/reveal.esm.js';
+        import Markdown from './node_modules/reveal.js/plugin/markdown/markdown.esm.js';
+        import QuaggaPlugin from './plugin/quagga.js';
+        import { startCountdown } from './lib/countdown.js';
+
+        // Reveal.jsを初期化
+        Reveal.initialize({
+            controls: false,
+            progress: false,
+            hash: true,
+            // 4:3比率の設定
+            width: 800, height: 600,
+            margin: 0,
+            minScale: 1,
+            maxScale: 1,
+            center: true,
+            disableLayout: false,
+            transition: 'none',
+            autoPlayMedia: true,
+            // プラグインを有効化
+            plugins: [ Markdown, QuaggaPlugin ]
+        });
+
+        // スライド変更時のイベントハンドラーを設定
+        Reveal.on('slidechanged', (event) => {
+            const state = event.currentSlide.dataset.state;
+            console.log(state);
+            if (state === 'with-timer') {
+                startCountdown();
+            }
+        });
+    </script>
+</body>
+</html>
