@@ -487,17 +487,34 @@ section:not(.present) .champion-title {
 
 .champion-answer .champion-title,
 .reveal-answer .champion-title {
-  width: 700px;
-  margin: 20px auto;
+  position: absolute;
+  width: 440px;
+  height: 90px;
+  top: -30px;
+  left: 150px;
+  margin-top: 0;
+  margin-left: calc((100% - 700px) / 2);
   background: linear-gradient(#fff, #dfefff);
   color: #003366;
   border-radius: 12px;
-  padding: 20px;
-  font-size: 1.8em;
-  font-weight: bold;
-  text-align: center;
+  padding: 3px 32px 3px 90px;
+  font-size: 1.6em;
+  font-weight: normal;
   line-height: 1.4;
+  align-content: center;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.champion-answer .champion-title::before,
+.reveal-answer .champion-title::before {
+  content: "A";
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #ff6666;
 }
 
 .champion-container {
