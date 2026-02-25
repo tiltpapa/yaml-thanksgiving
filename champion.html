@@ -28,18 +28,33 @@
                         4. あべのハルカス
                     </textarea>
                 </section>
-                <section>
-                    <!-- チャンピオンの回答 -->
+                <!-- チャンピオンの回答 -->
+                <section class="champion-answer" id="champion-answer-slide">
+                    <h1 class="champion-title">チャンピオンの回答</h1>
+                    <div class="champion-container">
+                        <div class="champion-left">
+                            <div class="crown-icon"></div>
+                            <div class="answer-symbols" id="answer-symbols"></div>
+                            <div class="arrow-icon"></div>
+                        </div>
+                        <div class="champion-right">
+                            <ol class="champion-choices" id="champion-choices"></ol>
+                        </div>
+                    </div>
                 </section>
-                <section>
-                    <!-- 答え合わせ① -->
+                
+                <!-- 答え合わせスライド（動的生成） -->
+                <div id="reveal-slides-container"></div>
+                
+                <!-- 正解 or 残念演出 -->
+                <section class="result-overlay" id="result-overlay">
+                    <div class="result-text" id="result-text"></div>
                 </section>
-                <section>
-                    <!-- 正解 or 残念 -->
-                </section>
+                
+                <!-- 解説 -->
                 <section data-markdown>
                     <textarea data-template>
-                        <!-- 解説 -->
+                        <!-- .slide: data-answer="2,1,3,4" -->
                         1. 509.2m
                         2. 634m
                         3. 333m
@@ -55,6 +70,296 @@
         import Markdown from './node_modules/reveal.js/plugin/markdown/markdown.esm.js';
         import QuaggaPlugin from './plugin/quagga.js';
         import { startCountdown } from './lib/countdown.js';
+        import { config } from './config.js';
+
+        let championData = null;
+        let questionData = null;
+        let isCorrect = false;
+        let wrongIndex = -1;
+
+        // チャンピオン情報を取得
+        const fetchChampion = async () => {
+            try {
+                const url = `/api/programs/${config.eventId}/periods/last_aggregate/champion`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log('チャンピオン取得:', data);
+                return data.champion;
+            } catch (error) {
+                console.error('チャンピオン取得エラー:', error);
+                return null;
+            }
+        };
+
+        // 直近の問題情報を取得
+        const fetchLastQuestion = async () => {
+            try {
+                const url = `/api/programs/${config.eventId}/questions/last_aggregate`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log('問題情報取得:', data);
+                return data;
+            } catch (error) {
+                console.error('問題情報取得エラー:', error);
+                return null;
+            }
+        };
+
+        // チャンピオンの回答を取得
+        const getChampionAnswer = (questionData, championId) => {
+            if (!questionData || !questionData.answers) return null;
+            
+            // チャンピオンIDで検索
+            let answer = questionData.answers.find(a => a.user_id === championId);
+            
+            // 見つからない場合は最も早い回答を採用
+            if (!answer && questionData.answers.length > 0) {
+                answer = questionData.answers.reduce((earliest, current) => {
+                    return new Date(current.created_at) < new Date(earliest.created_at) ? current : earliest;
+                });
+                console.log('チャンピオンの回答が見つからないため、最速回答を採用:', answer);
+            }
+            
+            return answer ? answer.answer.split(',').map(n => parseInt(n.trim())) : null;
+        };
+
+        // 問題スライドから選択肢を取得
+        const getChoicesFromSlide = () => {
+            const quizSlide = document.querySelector('.quiz.sort');
+            if (!quizSlide) {
+                console.error('クイズスライドが見つかりません');
+                return [];
+            }
+            
+            const items = quizSlide.querySelectorAll('ol li');
+            const choices = Array.from(items).map(item => item.textContent.trim());
+            console.log('取得した選択肢:', choices);
+            return choices;
+        };
+
+        // 解説スライドから正解順序を取得
+        const getCorrectAnswer = () => {
+            const explanationSlide = document.querySelector('[data-answer]');
+            if (!explanationSlide) return null;
+            
+            const answerStr = explanationSlide.dataset.answer;
+            return answerStr ? answerStr.split(',').map(n => parseInt(n.trim())) : null;
+        };
+
+        // 解説スライドから補足情報を取得
+        const getExplanations = () => {
+            const explanationSlide = document.querySelector('[data-answer]');
+            if (!explanationSlide) return [];
+            
+            const items = explanationSlide.querySelectorAll('ol li');
+            return Array.from(items).map(item => item.textContent.trim());
+        };
+
+        // チャンピオンの回答スライドを生成
+        const generateChampionSlide = (championAnswer, choices) => {
+            const symbolsContainer = document.getElementById('answer-symbols');
+            const choicesContainer = document.getElementById('champion-choices');
+            
+            symbolsContainer.innerHTML = '';
+            choicesContainer.innerHTML = '';
+            
+            const symbols = ['A', 'B', 'C', 'D', 'E', 'F'];
+            
+            // チャンピオンの回答順に表示
+            // championAnswer = [2, 1, 3, 4] の場合、左側に B, A, C, D と表示
+            championAnswer.forEach((choiceNum, index) => {
+                const symbol = symbols[choiceNum - 1]; // 選択肢番号に対応する記号
+                
+                // 左側：記号表示（選択肢番号に対応する記号を表示）
+                const symbolDiv = document.createElement('div');
+                symbolDiv.className = 'symbol-item';
+                symbolDiv.textContent = symbol;
+                symbolDiv.dataset.color = choiceNum; // 選択肢番号に対応する色
+                symbolsContainer.appendChild(symbolDiv);
+                
+                // 右側：選択肢文言（チャンピオンの回答順に並べる）
+                const li = document.createElement('li');
+                li.textContent = choices[choiceNum - 1]; // 選択肢番号-1でインデックス取得
+                li.dataset.symbol = symbol;
+                li.dataset.choiceNum = choiceNum; // 元の選択肢番号を保持
+                li.classList.add(`color-${choiceNum}`); // 色クラスを追加
+                choicesContainer.appendChild(li);
+            });
+        };
+
+        // 答え合わせスライドを動的生成
+        const generateRevealSlides = (championAnswer, correctAnswer, choices) => {
+            const slidesContainer = document.getElementById('reveal-slides-container');
+            slidesContainer.innerHTML = '';
+            
+            const symbols = ['A', 'B', 'C', 'D', 'E', 'F'];
+            isCorrect = true;
+            wrongIndex = -1;
+            
+            // 最後の2つは一度に開示するため、スライド数は選択肢数-1
+            for (let i = 0; i < correctAnswer.length - 1; i++) {
+                const section = document.createElement('section');
+                section.className = 'reveal-answer';
+                
+                const h1 = document.createElement('h1');
+                h1.className = 'champion-title';
+                h1.textContent = 'チャンピオンの回答';
+                
+                const containerDiv = document.createElement('div');
+                containerDiv.className = 'champion-container';
+                
+                // 左側：記号（グレースケール判定）
+                const leftDiv = document.createElement('div');
+                leftDiv.className = 'champion-left';
+                if (wrongIndex >= 0) {
+                    leftDiv.classList.add('grayscale');
+                }
+                
+                const crownDiv = document.createElement('div');
+                crownDiv.className = 'crown-icon';
+                
+                const symbolsDiv = document.createElement('div');
+                symbolsDiv.className = 'answer-symbols';
+                championAnswer.forEach((choiceNum, idx) => {
+                    const symbolDiv = document.createElement('div');
+                    symbolDiv.className = 'symbol-item';
+                    symbolDiv.textContent = symbols[choiceNum - 1]; // 選択肢番号に対応する記号
+                    symbolDiv.dataset.color = choiceNum;
+                    symbolsDiv.appendChild(symbolDiv);
+                });
+                
+                const arrowDiv = document.createElement('div');
+                arrowDiv.className = 'arrow-icon';
+                
+                leftDiv.appendChild(crownDiv);
+                leftDiv.appendChild(symbolsDiv);
+                leftDiv.appendChild(arrowDiv);
+                
+                // 右側：開示された選択肢（チャンピオンの回答順に表示）
+                const rightDiv = document.createElement('div');
+                rightDiv.className = 'champion-right';
+                
+                const ol = document.createElement('ol');
+                ol.className = 'champion-choices revealed';
+                
+                // 最後から2番目まで開示、最後は次のスライドで2つ同時開示
+                const revealCount = i === correctAnswer.length - 2 ? i + 2 : i + 1;
+                
+                for (let j = 0; j < revealCount; j++) {
+                    const li = document.createElement('li');
+                    const championChoiceNum = championAnswer[j]; // チャンピオンの回答順
+                    const correctChoiceNum = correctAnswer[j]; // 正解の順序
+                    const symbol = symbols[championChoiceNum - 1]; // 選択肢番号に対応する記号
+                    
+                    li.textContent = choices[championChoiceNum - 1]; // チャンピオンが選んだ選択肢を表示
+                    li.dataset.symbol = symbol;
+                    li.dataset.choiceNum = championChoiceNum;
+                    li.dataset.correctChoice = correctChoiceNum;
+                    li.classList.add(`color-${championChoiceNum}`); // 色クラスを追加
+                    
+                    // 不正解判定
+                    if (isCorrect && championChoiceNum !== correctChoiceNum) {
+                        isCorrect = false;
+                        wrongIndex = j;
+                    }
+                    
+                    ol.appendChild(li);
+                }
+                
+                rightDiv.appendChild(ol);
+                containerDiv.appendChild(leftDiv);
+                containerDiv.appendChild(rightDiv);
+                
+                section.appendChild(h1);
+                section.appendChild(containerDiv);
+                
+                // 不正解になった直後のスライドで結果スライドに遷移
+                if (!isCorrect && wrongIndex === i) {
+                    section.dataset.autoslide = '2000';
+                }
+                
+                slidesContainer.appendChild(section);
+            }
+        };
+
+        // 結果スライドを表示
+        const showResultSlide = () => {
+            const resultText = document.getElementById('result-text');
+            if (isCorrect) {
+                resultText.textContent = '正解！';
+                resultText.style.color = '#ff0000';
+            } else {
+                resultText.textContent = '残念！';
+                resultText.style.color = '#0000ff';
+            }
+        };
+
+        // 解説スライドを並び替え
+        const reorderExplanationSlide = (correctAnswer, explanations) => {
+            const explanationSlide = document.querySelector('[data-answer]');
+            if (!explanationSlide) return;
+            
+            const ol = explanationSlide.querySelector('ol');
+            if (!ol) return;
+            
+            ol.innerHTML = '';
+            
+            correctAnswer.forEach(choiceNum => {
+                const li = document.createElement('li');
+                li.textContent = explanations[choiceNum - 1];
+                ol.appendChild(li);
+            });
+        };
+
+        // データ取得と初期化
+        const initializeChampionQuiz = async () => {
+            const champion = await fetchChampion();
+            const question = await fetchLastQuestion();
+            
+            if (!question) {
+                console.error('問題データが取得できませんでした');
+                return;
+            }
+            
+            const championId = champion?.user?.id;
+            const championAnswer = getChampionAnswer(question, championId);
+            
+            if (!championAnswer) {
+                console.error('チャンピオンの回答が取得できませんでした');
+                return;
+            }
+            
+            const choices = getChoicesFromSlide();
+            const correctAnswer = getCorrectAnswer();
+            const explanations = getExplanations();
+            
+            if (!correctAnswer || choices.length === 0) {
+                console.error('問題データが不完全です');
+                return;
+            }
+            
+            // スライド生成
+            generateChampionSlide(championAnswer, choices);
+            generateRevealSlides(championAnswer, correctAnswer, choices);
+            reorderExplanationSlide(correctAnswer, explanations);
+            
+            // チャンピオンの回答スライドを初期化済みにマーク
+            const championSlide = document.getElementById('champion-answer-slide');
+            if (championSlide) {
+                championSlide.classList.add('initialized');
+            }
+            
+            // Reveal.jsを再同期
+            Reveal.sync();
+            
+            console.log('並び替えクイズ初期化完了', {
+                championAnswer,
+                correctAnswer,
+                isCorrect
+            });
+        };
 
         // Reveal.jsを初期化
         Reveal.initialize({
@@ -81,6 +386,21 @@
             if (state === 'with-timer') {
                 startCountdown();
             }
+            
+            // 結果スライドの場合
+            if (event.currentSlide.id === 'result-overlay') {
+                showResultSlide();
+            }
+        });
+
+        // Reveal.js準備完了後にデータ取得
+        Reveal.on('ready', () => {
+            // Cキーで初期化
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'c' || event.key === 'C') {
+                    initializeChampionQuiz();
+                }
+            });
         });
     </script>
 </body>

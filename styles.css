@@ -470,3 +470,256 @@
 .present > .present.maru-6 li:nth-child(6) {
   animation-play-state: running;
 }
+
+/* ===============================
+   並び替えクイズ - チャンピオンの回答
+================================ */
+.champion-answer,
+.reveal-answer {
+  position: relative;
+}
+
+/* 非表示のスライドの要素を隠す */
+section:not(.present) .champion-container,
+section:not(.present) .champion-title {
+  display: none;
+}
+
+.champion-answer .champion-title,
+.reveal-answer .champion-title {
+  width: 700px;
+  margin: 20px auto;
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  border-radius: 12px;
+  padding: 20px;
+  font-size: 1.8em;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.4;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.champion-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 700px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.champion-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+}
+
+.champion-left.grayscale {
+  filter: grayscale(100%);
+}
+
+.crown-icon {
+  width: 80px;
+  height: 70px;
+  position: relative;
+  margin-bottom: 10px;
+  background-image: url('./images/crown.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 2;
+}
+
+.answer-symbols {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 矢印の棒部分（記号の背景） */
+.answer-symbols::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 120%;
+  background: linear-gradient(to right, #ff4444 0%, #ff8844 30%, #ffcc44 60%, #ff8844 80%, #ff4444 100%);
+  z-index: -1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.symbol-item {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 2px 4px rgba(0,0,0,0.4);
+}
+
+.symbol-item[data-color="1"] {
+  background: #3498db;
+}
+
+.symbol-item[data-color="2"] {
+  background: #e74c3c;
+}
+
+.symbol-item[data-color="3"] {
+  background: #2ecc71;
+}
+
+.symbol-item[data-color="4"] {
+  background: #f1c40f;
+}
+
+.symbol-item[data-color="5"] {
+  background: #c5392a;
+}
+
+.symbol-item[data-color="6"] {
+  background: #ff0cd6;
+}
+
+.arrow-icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  margin-top: 0;
+}
+
+/* 矢印の先端（三角形） */
+.arrow-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-top: 60px solid #ff4444;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+  z-index: 1;
+}
+
+.champion-right {
+  flex: 1;
+  padding-top: 80px;
+}
+
+.champion-choices {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.champion-choices li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  padding: 12px 32px 12px 90px;
+  margin-bottom: 8px;
+  font-size: 1.3em;
+  font-weight: normal;
+  text-align: left;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  height: 60px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.champion-choices li::before {
+  content: attr(data-symbol);
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* ===============================
+   正解 or 残念演出
+================================ */
+.result-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-text {
+  font-size: 5em;
+  font-weight: bold;
+  text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  animation: result-appear 0.5s ease-out;
+}
+
+@keyframes result-appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+/* 動的に色を設定するためのクラス */
+.champion-choices li.color-1::before {
+  background: #3498db;
+}
+
+.champion-choices li.color-2::before {
+  background: #e74c3c;
+}
+
+.champion-choices li.color-3::before {
+  background: #2ecc71;
+}
+
+.champion-choices li.color-4::before {
+  background: #f1c40f;
+}
+
+.champion-choices li.color-5::before {
+  background: #c5392a;
+}
+
+.champion-choices li.color-6::before {
+  background: #ff0cd6;
+}
