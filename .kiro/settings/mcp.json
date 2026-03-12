@@ -9,7 +9,8 @@
       "autoApprove": [
         "navigate_page",
         "take_screenshot",
-        "press_key"
+        "press_key",
+        "new_page"
       ]
     },
     "reveal.js": {

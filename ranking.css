@@ -20,7 +20,7 @@
     writing-mode: vertical-rl;
     text-orientation: upright;
     width: 80px;
-    height: auto;
+    height: 480px;
     max-height: 520px;
     margin: 0;
     background: linear-gradient(#fff, #dfefff);
@@ -144,6 +144,63 @@
 
 .reveal .slides .ranking-slide .ranking-list li.rank-hidden .rank-time {
     visibility: hidden;
+}
+
+/* ===============================
+   フリップアニメーション
+================================ */
+
+/* ランキングリストに3D空間を設定 */
+.reveal .slides .ranking-slide .ranking-list {
+    perspective: 1000px;
+}
+
+/* 各ランキング項目の3D設定 */
+.reveal .slides .ranking-slide .ranking-list li {
+    transform-style: preserve-3d;
+}
+
+/* フリップ前の状態（裏面・非表示） */
+.reveal .slides .ranking-slide .ranking-list li.flip-ready {
+    transform: rotateX(180deg);
+}
+
+/* フリップ前は内容を隠す */
+.reveal .slides .ranking-slide .ranking-list li.flip-ready .rank-name,
+.reveal .slides .ranking-slide .ranking-list li.flip-ready .rank-point,
+.reveal .slides .ranking-slide .ranking-list li.flip-ready .rank-time {
+    opacity: 0;
+}
+
+/* フリップアニメーション */
+.reveal .slides .ranking-slide .ranking-list li.flip-animate {
+    animation: flipIn 0.8s ease-out forwards;
+}
+
+/* フリップ中も内容を隠す */
+.reveal .slides .ranking-slide .ranking-list li.flip-animate .rank-name,
+.reveal .slides .ranking-slide .ranking-list li.flip-animate .rank-point,
+.reveal .slides .ranking-slide .ranking-list li.flip-animate .rank-time {
+    opacity: 0;
+    animation: revealContent 0s ease-out 0.55s forwards;
+}
+
+@keyframes flipIn {
+    0% {
+        transform: rotateX(180deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+@keyframes revealContent {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* ===============================

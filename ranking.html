@@ -83,6 +83,55 @@
             }
         };
 
+        // フリップアニメーションを実行
+        const runFlipAnimation = (section) => {
+            // 上位表示スライドの種類を判定
+            let targetSelector = null;
+            
+            if (section.classList.contains('show-top') || section.classList.contains('show-top1')) {
+                // 1位表示スライド：1位のみアニメーション
+                targetSelector = '.ranking-list li.rank-top1';
+            } else if (section.classList.contains('show-top2')) {
+                // 2位表示スライド：2位のみアニメーション
+                targetSelector = '.ranking-list li.rank-top2';
+            } else if (section.classList.contains('show-top3')) {
+                // 3位表示スライド：3位のみアニメーション
+                targetSelector = '.ranking-list li.rank-top3';
+            }
+            
+            if (targetSelector) {
+                // 上位表示スライドの場合：対象の順位のみアニメーション
+                const targetItem = section.querySelector(targetSelector);
+                if (targetItem) {
+                    targetItem.classList.add('flip-ready');
+                    setTimeout(() => {
+                        targetItem.classList.remove('flip-ready');
+                        targetItem.classList.add('flip-animate');
+                        targetItem.addEventListener('animationend', () => {
+                            targetItem.classList.remove('flip-animate');
+                        }, { once: true });
+                    }, 100);
+                }
+            } else {
+                // 下位表示スライドの場合：下位から順番にアニメーション
+                const items = section.querySelectorAll('.ranking-list li:not(.rank-hidden)');
+                const itemsArray = Array.from(items);
+                
+                // 下位から順番にアニメーション（リストの下から上へ）
+                itemsArray.reverse().forEach((item, index) => {
+                    item.classList.add('flip-ready');
+                    setTimeout(() => {
+                        item.classList.remove('flip-ready');
+                        item.classList.add('flip-animate');
+                        // アニメーション終了後にクラスを削除
+                        item.addEventListener('animationend', () => {
+                            item.classList.remove('flip-animate');
+                        }, { once: true });
+                    }, index * 800); // 500msずつ遅延
+                });
+            }
+        };
+
         // ランキング項目のHTMLを生成
         const createRankingItem = (result, showRank = true) => {
             const li = document.createElement('li');
@@ -297,6 +346,11 @@
                 Reveal.layout();
                 requestAnimationFrame(() => {
                     Reveal.slide(0, 0);
+                    // 最初のスライドでアニメーションを実行
+                    const firstSlide = document.querySelector('.reveal .slides section.present');
+                    if (firstSlide && firstSlide.classList.contains('ranking-slide')) {
+                        runFlipAnimation(firstSlide);
+                    }
                 });
             });
         };
@@ -398,6 +452,14 @@
             center: true,
             disableLayout: false,
             transition: 'none'
+        });
+
+        // スライド変更時にアニメーションを実行
+        Reveal.on('slidechanged', (event) => {
+            const currentSlide = event.currentSlide;
+            if (currentSlide && currentSlide.classList.contains('ranking-slide')) {
+                runFlipAnimation(currentSlide);
+            }
         });
 
         console.log('ランキング表示初期化完了');
