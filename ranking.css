@@ -1,0 +1,205 @@
+/* ===============================
+   ランキング表示スタイル
+================================ */
+
+/* ランキングスライドのコンテナ */
+.reveal .slides .ranking-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* タイトル（縦書き・右側固定配置） */
+.reveal .slides .ranking-slide .ranking-title {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    width: 80px;
+    height: auto;
+    max-height: 520px;
+    margin: 0;
+    background: linear-gradient(#fff, #dfefff);
+    color: #003366;
+    border-radius: 12px;
+    padding: 24px 12px;
+    font-size: 1.4em;
+    font-weight: normal;
+    line-height: 1.4;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    letter-spacing: 0.2em;
+    align-content: center;
+}
+
+/* ランキングリスト */
+.reveal .slides .ranking-slide .ranking-list {
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 750px;
+}
+
+/* 各ランキング項目 */
+.reveal .slides .ranking-slide .ranking-list li {
+    position: relative;
+    background: linear-gradient(#001a66, #0b2a70);
+    border: 4px ridge #000;
+    border-radius: 16px;
+    padding: 8px 180px 8px 70px;
+    margin-bottom: 6px;
+    font-size: 1.1em;
+    font-weight: normal;
+    text-align: left;
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 40px;
+}
+
+/* 順位番号 */
+.reveal .slides .ranking-slide .rank-number {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #3498db;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1em;
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+                inset 0 -2px 5px rgba(0,0,0,0.35),
+                0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* 名前 */
+.reveal .slides .ranking-slide .rank-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ポイント表示 */
+.reveal .slides .ranking-slide .rank-point {
+    position: absolute;
+    right: 100px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, #cccccc, #ffffff 30%);
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: 3px inset #000;
+    min-width: 50px;
+    color: #003366;
+    font-size: 1em;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* タイム表示 */
+.reveal .slides .ranking-slide .rank-time {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 70px;
+    text-align: right;
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+/* 非表示（???）の項目 */
+.reveal .slides .ranking-slide .ranking-list li.rank-hidden {
+    background: linear-gradient(#333, #444);
+    opacity: 0.7;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-hidden .rank-number {
+    background: #666;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-hidden .rank-point {
+    visibility: hidden;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-hidden .rank-time {
+    visibility: hidden;
+}
+
+/* ===============================
+   上位者の特別スタイル
+================================ */
+
+/* 1位 */
+.reveal .slides .ranking-slide .ranking-list li.rank-top1 {
+    background: linear-gradient(#8B6914, #D4AF37);
+    border-color: #FFD700;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-top1 .rank-number {
+    background: linear-gradient(#FFD700, #FFA500);
+    color: #000;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+}
+
+/* 2位 */
+.reveal .slides .ranking-slide .ranking-list li.rank-top2 {
+    background: linear-gradient(#5a5a5a, #a0a0a0);
+    border-color: #C0C0C0;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-top2 .rank-number {
+    background: linear-gradient(#C0C0C0, #808080);
+    color: #000;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+}
+
+/* 3位 */
+.reveal .slides .ranking-slide .ranking-list li.rank-top3 {
+    background: linear-gradient(#8B4513, #CD853F);
+    border-color: #CD7F32;
+}
+
+.reveal .slides .ranking-slide .ranking-list li.rank-top3 .rank-number {
+    background: linear-gradient(#CD7F32, #8B4513);
+    color: #fff;
+}
+
+/* ===============================
+   順位ごとの色分け（通常）
+================================ */
+.reveal .slides .ranking-slide .ranking-list li:nth-child(1) .rank-number { background: #FFD700; color: #000; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(2) .rank-number { background: #C0C0C0; color: #000; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(3) .rank-number { background: #CD7F32; color: #fff; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(4) .rank-number { background: #3498db; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(5) .rank-number { background: #e74c3c; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(6) .rank-number { background: #2ecc71; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(7) .rank-number { background: #f1c40f; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(8) .rank-number { background: #9b59b6; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(9) .rank-number { background: #1abc9c; }
+.reveal .slides .ranking-slide .ranking-list li:nth-child(10) .rank-number { background: #e67e22; }
+
+/* 非表示項目の順位色を上書き */
+.reveal .slides .ranking-slide .ranking-list li.rank-hidden .rank-number {
+    background: #666;
+}

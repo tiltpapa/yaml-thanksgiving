@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ランキング表示</title>
+    
+    <link rel="stylesheet" href="node_modules/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ranking.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section id="ranking-container">
+                <!-- スライドは動的に生成される -->
+                <section>
+                    <h1>ランキング</h1>
+                    <p>Rキーでデータを取得</p>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <script type="module">
+        import Reveal from './node_modules/reveal.js/dist/reveal.esm.js';
+        import { config } from './config.js';
+
+        // ランキングの種類
+        const RANKING_TYPE = {
+            QUESTION: 'question',    // 直近の問題
+            PERIOD: 'period',        // 直近のピリオド
+            TOTAL_TOP1: 'total_top1', // 総合（1位別表示）
+            TOTAL_TOP3: 'total_top3'  // 総合（1~3位別表示）
+        };
+
+        let currentType = RANKING_TYPE.QUESTION;
+        let rankingData = null;
+
+        // 直近の問題ランキングを取得
+        const fetchQuestionRanking = async () => {
+            try {
+                const url = `/api/programs/${config.eventId}/questions/last_aggregate`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log('問題ランキング取得:', data);
+                return data.results || [];
+            } catch (error) {
+                console.error('問題ランキング取得エラー:', error);
+                return [];
+            }
+        };
+
+        // 直近のピリオドランキングを取得
+        const fetchPeriodRanking = async () => {
+            try {
+                const url = `/api/programs/${config.eventId}/result/period`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log('ピリオドランキング取得:', data);
+                return data.results || [];
+            } catch (error) {
+                console.error('ピリオドランキング取得エラー:', error);
+                return [];
+            }
+        };
+
+        // 総合ランキングを取得
+        const fetchTotalRanking = async () => {
+            try {
+                const url = `/api/programs/${config.eventId}/result/total`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log('総合ランキング取得:', data);
+                return data.results || [];
+            } catch (error) {
+                console.error('総合ランキング取得エラー:', error);
+                return [];
+            }
+        };
+
+        // ランキング項目のHTMLを生成
+        const createRankingItem = (result, showRank = true) => {
+            const li = document.createElement('li');
+            
+            const rankSpan = document.createElement('span');
+            rankSpan.className = 'rank-number';
+            rankSpan.textContent = showRank ? result.rank : '';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'rank-name';
+            nameSpan.textContent = result.member?.user?.name || '不明';
+            
+            const pointSpan = document.createElement('span');
+            pointSpan.className = 'rank-point';
+            pointSpan.textContent = `${result.point} P`;
+            
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'rank-time';
+            timeSpan.textContent = result.time ? parseFloat(result.time).toFixed(2) : '';
+            
+            li.appendChild(rankSpan);
+            li.appendChild(nameSpan);
+            li.appendChild(pointSpan);
+            li.appendChild(timeSpan);
+            
+            return li;
+        };
+
+        // ランキングスライドを生成（下位から表示）
+        const generateRankingSlides = (results, type) => {
+            // .slidesコンテナを取得
+            const slidesContainer = document.querySelector('.reveal .slides');
+            
+            // 既存のスライドをクリア
+            slidesContainer.innerHTML = '';
+            
+            const countPerScreen = config.countOneScreen || 10;
+            const totalCount = results.length;
+            
+            if (totalCount === 0) {
+                const section = document.createElement('section');
+                section.className = 'ranking-slide';
+                section.innerHTML = '<div class="ranking-title">データがありません</div>';
+                slidesContainer.appendChild(section);
+                Reveal.sync();
+                setTimeout(() => {
+                    Reveal.layout();
+                    Reveal.slide(0, 0);
+                }, 50);
+                return;
+            }
+
+            // タイトルを決定
+            let title = 'ランキング';
+            switch (type) {
+                case RANKING_TYPE.QUESTION:
+                    title = '問題ランキング';
+                    break;
+                case RANKING_TYPE.PERIOD:
+                    title = 'ピリオドランキング';
+                    break;
+                case RANKING_TYPE.TOTAL_TOP1:
+                case RANKING_TYPE.TOTAL_TOP3:
+                    title = '総合ランキング';
+                    break;
+            }
+
+            // 1位（と2位、3位）を除いた人数
+            let topCount = type === RANKING_TYPE.TOTAL_TOP3 ? 3 : 1;
+            const othersCount = Math.max(0, totalCount - topCount);
+            
+            // 下位スライドの表示人数が設定に満たない場合はスキップ
+            const skipLowerSlides = othersCount < countPerScreen;
+            
+            // 下位から表示するスライドを生成（スキップしない場合のみ）
+            if (!skipLowerSlides) {
+                const slideCount = Math.ceil(othersCount / countPerScreen);
+                
+                for (let i = slideCount - 1; i >= 0; i--) {
+                    const section = document.createElement('section');
+                    section.className = 'ranking-slide';
+                    
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'ranking-title';
+                    titleDiv.textContent = title;
+                    section.appendChild(titleDiv);
+                    
+                    const ol = document.createElement('ol');
+                    ol.className = 'ranking-list';
+                    
+                    const startIdx = topCount + (i * countPerScreen);
+                    const endIdx = Math.min(startIdx + countPerScreen, totalCount);
+                    
+                    for (let j = startIdx; j < endIdx; j++) {
+                        const li = createRankingItem(results[j]);
+                        ol.appendChild(li);
+                    }
+                    
+                    section.appendChild(ol);
+                    slidesContainer.appendChild(section);
+                }
+            }
+
+            // 1位以外が表示された状態のスライド（1位は非表示）
+            if (type === RANKING_TYPE.TOTAL_TOP1 || type === RANKING_TYPE.QUESTION || type === RANKING_TYPE.PERIOD) {
+                const beforeTopSection = document.createElement('section');
+                beforeTopSection.className = 'ranking-slide before-top';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'ranking-title';
+                titleDiv.textContent = title;
+                beforeTopSection.appendChild(titleDiv);
+                
+                const ol = document.createElement('ol');
+                ol.className = 'ranking-list';
+                
+                // 1位は空欄
+                const emptyLi = document.createElement('li');
+                emptyLi.className = 'rank-hidden';
+                emptyLi.innerHTML = '<span class="rank-number">1</span><span class="rank-name">???</span><span class="rank-point"></span><span class="rank-time"></span>';
+                ol.appendChild(emptyLi);
+                
+                // 2位以降を表示（最大countPerScreen-1人）
+                const showCount = Math.min(countPerScreen - 1, totalCount - 1);
+                for (let j = 1; j <= showCount; j++) {
+                    const li = createRankingItem(results[j]);
+                    ol.appendChild(li);
+                }
+                
+                beforeTopSection.appendChild(ol);
+                slidesContainer.appendChild(beforeTopSection);
+                
+                // 1位を表示するスライド
+                const topSection = document.createElement('section');
+                topSection.className = 'ranking-slide show-top';
+                
+                const titleDivTop = document.createElement('div');
+                titleDivTop.className = 'ranking-title';
+                titleDivTop.textContent = title;
+                topSection.appendChild(titleDivTop);
+                
+                const olTop = document.createElement('ol');
+                olTop.className = 'ranking-list';
+                
+                // 1位を表示
+                if (results[0]) {
+                    const topLi = createRankingItem(results[0]);
+                    topLi.className = 'rank-top1';
+                    olTop.appendChild(topLi);
+                }
+                
+                // 2位以降
+                for (let j = 1; j <= showCount; j++) {
+                    const li = createRankingItem(results[j]);
+                    olTop.appendChild(li);
+                }
+                
+                topSection.appendChild(olTop);
+                slidesContainer.appendChild(topSection);
+            }
+
+            // 総合（1~3位別表示）の場合
+            if (type === RANKING_TYPE.TOTAL_TOP3) {
+                // 4位以降が表示された状態（1~3位は非表示）
+                const before3Section = document.createElement('section');
+                before3Section.className = 'ranking-slide before-top3';
+                
+                const titleDiv3 = document.createElement('div');
+                titleDiv3.className = 'ranking-title';
+                titleDiv3.textContent = title;
+                before3Section.appendChild(titleDiv3);
+                
+                const ol3 = document.createElement('ol');
+                ol3.className = 'ranking-list';
+                
+                // 1~3位は空欄
+                for (let k = 1; k <= 3; k++) {
+                    const emptyLi = document.createElement('li');
+                    emptyLi.className = 'rank-hidden';
+                    emptyLi.innerHTML = `<span class="rank-number">${k}</span><span class="rank-name">???</span><span class="rank-point"></span><span class="rank-time"></span>`;
+                    ol3.appendChild(emptyLi);
+                }
+                
+                // 4位以降を表示
+                const showCount3 = Math.min(countPerScreen - 3, totalCount - 3);
+                for (let j = 3; j < 3 + showCount3; j++) {
+                    if (results[j]) {
+                        const li = createRankingItem(results[j]);
+                        ol3.appendChild(li);
+                    }
+                }
+                
+                before3Section.appendChild(ol3);
+                slidesContainer.appendChild(before3Section);
+
+                // 3位を表示
+                const show3rdSection = createTopRevealSection(title, results, 3, countPerScreen);
+                slidesContainer.appendChild(show3rdSection);
+
+                // 2位を表示
+                const show2ndSection = createTopRevealSection(title, results, 2, countPerScreen);
+                slidesContainer.appendChild(show2ndSection);
+
+                // 1位を表示
+                const show1stSection = createTopRevealSection(title, results, 1, countPerScreen);
+                slidesContainer.appendChild(show1stSection);
+            }
+
+            Reveal.sync();
+            // レイアウトを再計算してから最初のスライドに移動
+            requestAnimationFrame(() => {
+                Reveal.layout();
+                requestAnimationFrame(() => {
+                    Reveal.slide(0, 0);
+                });
+            });
+        };
+
+        // 上位表示スライドを生成
+        const createTopRevealSection = (title, results, revealRank, countPerScreen) => {
+            const section = document.createElement('section');
+            section.className = `ranking-slide show-top${revealRank}`;
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'ranking-title';
+            titleDiv.textContent = title;
+            section.appendChild(titleDiv);
+            
+            const ol = document.createElement('ol');
+            ol.className = 'ranking-list';
+            
+            // 1~3位を表示（revealRank以上は表示、未満は非表示）
+            for (let k = 1; k <= 3; k++) {
+                if (k >= revealRank && results[k - 1]) {
+                    const li = createRankingItem(results[k - 1]);
+                    li.className = `rank-top${k}`;
+                    ol.appendChild(li);
+                } else {
+                    const emptyLi = document.createElement('li');
+                    emptyLi.className = 'rank-hidden';
+                    emptyLi.innerHTML = `<span class="rank-number">${k}</span><span class="rank-name">???</span><span class="rank-point"></span><span class="rank-time"></span>`;
+                    ol.appendChild(emptyLi);
+                }
+            }
+            
+            // 4位以降
+            const showCount = Math.min(countPerScreen - 3, results.length - 3);
+            for (let j = 3; j < 3 + showCount; j++) {
+                if (results[j]) {
+                    const li = createRankingItem(results[j]);
+                    ol.appendChild(li);
+                }
+            }
+            
+            section.appendChild(ol);
+            return section;
+        };
+
+        // データ取得と表示
+        const loadRanking = async (type) => {
+            currentType = type;
+            let results = [];
+            
+            switch (type) {
+                case RANKING_TYPE.QUESTION:
+                    results = await fetchQuestionRanking();
+                    break;
+                case RANKING_TYPE.PERIOD:
+                    results = await fetchPeriodRanking();
+                    break;
+                case RANKING_TYPE.TOTAL_TOP1:
+                case RANKING_TYPE.TOTAL_TOP3:
+                    results = await fetchTotalRanking();
+                    break;
+            }
+            
+            rankingData = results;
+            generateRankingSlides(results, type);
+        };
+
+        // キーボードショートカット
+        document.addEventListener('keydown', async (event) => {
+            switch (event.key) {
+                case '1':
+                    await loadRanking(RANKING_TYPE.QUESTION);
+                    break;
+                case '2':
+                    await loadRanking(RANKING_TYPE.PERIOD);
+                    break;
+                case '3':
+                    await loadRanking(RANKING_TYPE.TOTAL_TOP1);
+                    break;
+                case '4':
+                    await loadRanking(RANKING_TYPE.TOTAL_TOP3);
+                    break;
+                case 'r':
+                case 'R':
+                    await loadRanking(currentType);
+                    break;
+            }
+        });
+
+        // Reveal.jsを初期化
+        Reveal.initialize({
+            controls: false,
+            progress: false,
+            hash: true,
+            width: 1000,
+            height: 600,
+            margin: 0,
+            minScale: 1,
+            maxScale: 1,
+            center: true,
+            disableLayout: false,
+            transition: 'none'
+        });
+
+        console.log('ランキング表示初期化完了');
+        console.log('キーボードショートカット:');
+        console.log('  1: 問題ランキング');
+        console.log('  2: ピリオドランキング');
+        console.log('  3: 総合ランキング（1位別表示）');
+        console.log('  4: 総合ランキング（1~3位別表示）');
+        console.log('  R: 現在のランキングを再取得');
+    </script>
+</body>
+</html>
