@@ -74,6 +74,11 @@
 3. ![C](images/tennis.png)
 4. ![D](images/himawari-16-9.jpg)
 
+- 野球
+- サッカー
+- テニス
+- ひまわり
+
 >>>
 <!-- .slide: data-state="copy-prev" -->
 <!-- .slide: class="answer image-4taku" -->
