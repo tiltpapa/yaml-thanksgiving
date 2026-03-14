@@ -46,7 +46,28 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 console.log('問題ランキング取得:', data);
-                return data.results || [];
+                
+                const answers = data.answers || [];
+                
+                // タイム昇順でソート
+                answers.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
+                
+                // rankを付与（同タイムは同順位）
+                let currentRank = 1;
+                return answers.map((answer, index) => {
+                    if (index > 0) {
+                        const prev = answers[index - 1];
+                        if (answer.time !== prev.time) {
+                            currentRank = index + 1;
+                        }
+                    }
+                    return {
+                        rank: currentRank,
+                        point: answer.point,
+                        time: answer.time,
+                        member: answer.member
+                    };
+                });
             } catch (error) {
                 console.error('問題ランキング取得エラー:', error);
                 return [];

@@ -320,6 +320,109 @@
 }
 
 /* ===============================
+   画像選択肢のキャプション（ul）
+================================ */
+.image-4taku ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 120px;
+  width: 700px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.image-2taku ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 120px;
+  width: 700px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.image-6taku ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 50px;
+  width: 800px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.image-4taku ul li,
+.image-2taku ul li,
+.image-6taku ul li {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: none;
+  border: 4px solid transparent;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.image-4taku ul li {
+  height: 268px;
+  padding: 0;
+}
+
+.image-2taku ul li {
+  height: 524px;
+  padding: 0;
+}
+
+.image-6taku ul li {
+  height: 268px;
+  padding: 0;
+}
+
+.image-4taku ul li::before,
+.image-2taku ul li::before,
+.image-6taku ul li::before {
+  content: none;
+}
+
+.image-4taku ul li,
+.image-2taku ul li,
+.image-6taku ul li {
+  color: #fff;
+  font-size: 2em;
+  text-align: center;
+  background: none;
+  padding: 0;
+  filter: drop-shadow(3px 3px 5px #DDDDDD);
+}
+
+/* キャプション用ulはカウンターに含めない */
+.image-4taku ul,
+.image-2taku ul,
+.image-6taku ul {
+  counter-reset: none;
+}
+
+.image-4taku ul li,
+.image-2taku ul li,
+.image-6taku ul li {
+  counter-increment: none;
+  animation: none;
+}
+
+/* ===============================
    選択肢の番号（li:before）
 ================================ */
 .text-4taku ol li::before,
@@ -453,7 +556,7 @@
 /* ===============================
    回答数表示
 ================================ */
-.answer li::after {
+.answer ol li::after {
   content: attr(data-count);
   position: absolute;
   right: 20px;
@@ -499,44 +602,44 @@
   animation-play-state: paused;
 }
 
-.maru-1 li:nth-child(1) {
+.maru-1 ol li:nth-child(1) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-.maru-2 li:nth-child(2) {
+.maru-2 ol li:nth-child(2) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-.maru-3 li:nth-child(3) {
+.maru-3 ol li:nth-child(3) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-.maru-4 li:nth-child(4) {
+.maru-4 ol li:nth-child(4) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-.maru-5 li:nth-child(5) {
+.maru-5 ol li:nth-child(5) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
-.maru-6 li:nth-child(6) {
+.maru-6 ol li:nth-child(6) {
   animation: maru-blink 1.8s ease-in-out forwards;
   animation-play-state: paused;
 }
 
 /* スライド表示時にアニメーション開始 */
 .present > .present .maru-this,
-.present > .present.maru-1 li:nth-child(1),
-.present > .present.maru-2 li:nth-child(2),
-.present > .present.maru-3 li:nth-child(3),
-.present > .present.maru-4 li:nth-child(4),
-.present > .present.maru-5 li:nth-child(5),
-.present > .present.maru-6 li:nth-child(6) {
+.present > .present.maru-1 ol li:nth-child(1),
+.present > .present.maru-2 ol li:nth-child(2),
+.present > .present.maru-3 ol li:nth-child(3),
+.present > .present.maru-4 ol li:nth-child(4),
+.present > .present.maru-5 ol li:nth-child(5),
+.present > .present.maru-6 ol li:nth-child(6) {
   animation-play-state: running;
 }
 
@@ -870,4 +973,152 @@ section:not(.present) .champion-title {
 
 .champion-choices li.color-6::before {
   background: #ff0cd6;
+}
+
+/* ===============================
+   大画像＋4択 (image-4taku-h2)
+   h2: 大きな画像エリア（上部）
+   ol: 4つの選択肢が横一列（下部）
+   h1: 右側に縦書き問題文
+================================ */
+
+/* h1: 縦書き問題文（image-Xtakuと共通化） */
+.image-4taku-h2 h1 {
+  position: absolute;
+  right: 30px;
+  top: 0px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  width: 80px;
+  height: 320px;
+  margin: 0;
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  border-radius: 12px;
+  padding: 70px 12px 24px 12px;
+  font-size: 1.4em;
+  font-weight: normal;
+  line-height: 1.4;
+  align-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* h1のQマーク */
+.image-4taku-h2 h1::before {
+  content: "Q";
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  color: #00cc66;
+  font-size: 1.4em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* answer時のAマーク */
+.answer.image-4taku-h2 h1::before {
+  content: "A";
+  color: #cc0000;
+}
+
+/* h2: 大きな画像表示エリア */
+.image-4taku-h2 h2 {
+  margin: 0 0 12px 120px;
+  width: 700px;
+  height: 330px;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 8px inset #ffffff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  box-sizing: border-box;
+}
+
+.image-4taku-h2 h2 img,
+.image-4taku-h2 h2 video {
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ol: 4つの選択肢を横一列 */
+.image-4taku-h2 ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 120px;
+  width: 700px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* 各選択肢 */
+.image-4taku-h2 ol li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  padding: 40px 8px 8px 8px;
+  font-size: 1.0em;
+  font-weight: normal;
+  text-align: center;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* 選択肢内の画像サイズ */
+.image-4taku-h2 ol li img,
+.image-4taku-h2 ol li video {
+  max-width: 100%;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 番号（左上） */
+.image-4taku-h2 ol li::before {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  transform: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.0em;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* タイマー位置 */
+.image-4taku-h2 .countdown-timer {
+  bottom: 0px;
+  right: 32px;
+}
+
+/* 回答数表示位置 */
+.image-4taku-h2 ol li::after {
+  top: 80%;
 }

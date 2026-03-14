@@ -10,7 +10,8 @@
         "navigate_page",
         "take_screenshot",
         "press_key",
-        "new_page"
+        "new_page",
+        "take_snapshot"
       ]
     },
     "reveal.js": {
