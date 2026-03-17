@@ -14,11 +14,11 @@
         "take_snapshot"
       ]
     },
-    "reveal.js": {
+    "reveal-thanksgiving": {
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://gitmcp.io/hakimel/reveal.js"
+        "https://gitmcp.io/tiltpapa/reveal-thanksgiving"
       ]
     }
   }
