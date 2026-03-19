@@ -1,0 +1,41 @@
+period:
+  - id: 1
+  - withdraw: false #予選落ち
+---
+questions:
+  - Q: 
+    - title: "どれが好き?" #扉スライド
+    - subtitle: false
+    - lead-in: #前フリ(なくてよい)
+      - text: "ひまわり" #複数行の可能性
+      - image: "images/himawari.jpg"
+    - layout: #ここから問題画面の設定
+      - type: "select" #問題タイプ、select:選択, sort:並び替え, input:入力問題
+      - large-image: "images/himawari.jpg" #選択肢と別の大きな画像（なくて良い）
+      - mini-title: "どれが好き？"
+    - selections:
+      1: ["images/baseball.png", "野球"] #キャプションをつけたい場合はこのようにする
+      2: "images/soccer.png"
+      3: "images/tennis.png"
+      4: "images/swimming.png"
+    - answer:
+      - answer: [1, 2, 3, 4] #複数ある場合や並び替えはこのようにする
+      - caption: #解説
+        1: "やきゅう"
+        2: "さっかー"
+        3: "てにす"
+        4: "すいえい"
+  - Q:
+    - title: "どれが好き？2"
+    - subtitle: "リターンズ"
+    - layout: #ここから問題画面の設定
+      - type: "select"
+      - mini-title: "どれが好き？"
+    - selections:
+      1: "野球"
+      2: "サッカー"
+      3: "テニス"
+      4: "水泳"
+---
+settings:
+---
