@@ -85,9 +85,11 @@ export class SlideController {
             }
         });
 
-        // クリックで次へ
+        // クリックで次へ 一旦無効
+        /*
         this.container.addEventListener('click', () => {
             this.next();
         });
+        */
     }
 }
