@@ -11,7 +11,8 @@
         "take_screenshot",
         "press_key",
         "new_page",
-        "take_snapshot"
+        "take_snapshot",
+        "list_pages"
       ]
     },
     "reveal-thanksgiving": {
