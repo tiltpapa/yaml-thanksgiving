@@ -1,13 +1,64 @@
 /* ===============================
    全体
 ================================ */
-.reveal .slides {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.slide {
   position: relative;
-  width: 90%;
-  margin: 0 auto;
+  width: 1000px;
+  height: 600px;
   color: #fff;
   background: linear-gradient(135deg, #aaeeff, #00aaff);
   font-family: 'LINE Seed JP', 'Noto Sans JP', 'ヒラギノ角ゴシック', Meiryo, "MS Gothic", sans-serif;
+  overflow: hidden;
+}
+
+/* タイトルスライド */
+.title-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.title-slide h1 {
+  font-size: 3em;
+  color: #003366;
+  text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+
+.title-slide h2 {
+  font-size: 1.8em;
+  color: #003366;
+  margin-top: 20px;
+}
+
+/* エラー表示 */
+.error {
+  color: #ff0000;
+  font-size: 1.5em;
+  text-align: center;
+  padding: 40px;
 }
 
 /* ===============================

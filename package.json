@@ -1,14 +1,10 @@
 {
-  "name": "quiz-slide-reveal",
+  "name": "yaml-thanksgiving",
   "version": "1.0.0",
-  "description": "Marpから変換されたreveal.jsクイズスライド",
-  "main": "index.html",
+  "description": "YAMLベースのクイズスライドシステム",
   "type": "module",
   "scripts": {
-    "start": "node proxy-server.js"
-  },
-  "dependencies": {
-    "reveal.js": "^5.2.1"
+    "start": "npx http-server -p 3000 -c-1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"

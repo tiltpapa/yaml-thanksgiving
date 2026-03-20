@@ -1,0 +1,22 @@
+questions:
+  - title: "どれが好き？"
+    layout:
+      type: "select"
+      mini-title: "どれが好き？"
+    selections:
+      1: "野球"
+      2: "サッカー"
+      3: "テニス"
+      4: "水泳"
+    answer:
+      answer: [1]
+
+  - title: "2択テスト"
+    layout:
+      type: "select"
+      mini-title: "どちらが好き？"
+    selections:
+      1: "犬"
+      2: "猫"
+    answer:
+      answer: [2]
