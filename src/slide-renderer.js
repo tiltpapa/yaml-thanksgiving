@@ -33,6 +33,10 @@ export function renderQuestionSlide(question) {
 
     // 選択肢リスト
     const ol = document.createElement('ol');
+    const hasImages = Object.values(selections).some(v => 
+        isImagePath(v) || (Array.isArray(v) && isImagePath(v[0]))
+    );
+
     for (const [key, value] of Object.entries(selections)) {
         const li = document.createElement('li');
         
@@ -42,6 +46,12 @@ export function renderQuestionSlide(question) {
             img.src = value[0];
             img.alt = value[1] || '';
             li.appendChild(img);
+            if (value[1]) {
+                const caption = document.createElement('span');
+                caption.className = 'caption';
+                caption.textContent = value[1];
+                li.appendChild(caption);
+            }
         } else if (typeof value === 'string' && isImagePath(value)) {
             // 画像パスのみ
             const img = document.createElement('img');
