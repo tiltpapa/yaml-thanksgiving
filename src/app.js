@@ -7,17 +7,19 @@ async function init() {
     const controller = new SlideController(container);
 
     try {
-        // YAMLを読み込み
         const quizData = await loadQuizYaml('quiz.yml');
         console.log('Loaded quiz data:', quizData);
 
-        // スライドを生成
+        // 2次元スライド配列を生成
+        // slides[h][v] - 横方向が問題グループ、縦方向が問題→回答
         const slides = [];
         
         for (const question of quizData.questions) {
-            // タイトルスライド（titleがあれば）
-            if (question.title && !question.layout) {
-                slides.push({
+            const verticalStack = [];
+            
+            // タイトルスライド
+            if (question.title) {
+                verticalStack.push({
                     type: 'title',
                     data: question,
                     element: renderTitleSlide(question)
@@ -26,28 +28,34 @@ async function init() {
             
             // 問題スライド
             if (question.selections) {
-                slides.push({
+                verticalStack.push({
                     type: 'question',
                     data: question,
                     element: renderQuestionSlide(question)
                 });
 
-                // 回答スライド
+                // 回答スライド（縦方向に配置）
                 if (question.answer) {
-                    slides.push({
+                    verticalStack.push({
                         type: 'answer',
                         data: question,
                         element: renderAnswerSlide(question)
                     });
                 }
             }
+            
+            if (verticalStack.length > 0) {
+                slides.push(verticalStack);
+            }
         }
 
         controller.setSlides(slides);
         
-        // デバッグ用：スライド情報を表示
-        controller.onSlideChange = (index, slide) => {
-            console.log(`Slide ${index + 1}/${slides.length}: ${slide.type}`);
+        // デバッグ用
+        controller.onSlideChange = (h, v, slide) => {
+            const totalH = slides.length;
+            const totalV = slides[h]?.length || 0;
+            console.log(`Slide [${h}/${v}] (${h+1}/${totalH}, ${v+1}/${totalV}): ${slide.type}`);
         };
 
     } catch (error) {
