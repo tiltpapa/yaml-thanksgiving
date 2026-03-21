@@ -17,8 +17,8 @@ async function init() {
         for (const question of quizData.questions) {
             const verticalStack = [];
             
-            // タイトルスライド（selectionsがない場合）
-            if (question.title && !question.selections) {
+            // タイトルスライド
+            if (question.title) {
                 verticalStack.push({
                     type: 'title',
                     data: question,
