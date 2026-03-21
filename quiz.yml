@@ -1,6 +1,29 @@
 questions:
-  # テキスト4択
-  - title: "どれが好き？"
+  # ===============================
+  # タイトルスライド
+  # ===============================
+  - title: "クイズ大会"
+    subtitle: "全レイアウトパターン"
+    layout:
+      type: "title"
+
+  # ===============================
+  # text-2taku: テキスト2択
+  # ===============================
+  - title: "テキスト2択テスト"
+    layout:
+      type: "select"
+      mini-title: "どちらが好き？"
+    selections:
+      1: "犬"
+      2: "猫"
+    answer:
+      answer: [1]
+
+  # ===============================
+  # text-4taku: テキスト4択
+  # ===============================
+  - title: "テキスト4択テスト"
     layout:
       type: "select"
       mini-title: "どれが好き？"
@@ -12,39 +35,142 @@ questions:
     answer:
       answer: [1]
 
-  # テキスト2択
-  - title: "2択テスト"
+  # ===============================
+  # text-6taku: テキスト6択
+  # ===============================
+  - title: "テキスト6択テスト"
+    layout:
+      type: "select"
+      mini-title: "好きなスポーツは？"
+    selections:
+      1: "野球"
+      2: "サッカー"
+      3: "テニス"
+      4: "水泳"
+      5: "バスケットボール"
+      6: "バレーボール"
+    answer:
+      answer: [3]
+
+  # ===============================
+  # image-2taku: 画像2択
+  # ===============================
+  - title: "画像2択テスト"
+    layout:
+      type: "select"
+      mini-title: "どちらが野球？"
+    selections:
+      1: "images/baseball.png"
+      2: "images/soccer.png"
+    answer:
+      answer: [1]
+
+  # ===============================
+  # image-2taku: 画像2択（キャプション付き）
+  # ===============================
+  - title: "画像2択キャプション付き"
     layout:
       type: "select"
       mini-title: "どちらが好き？"
     selections:
-      1: "犬"
-      2: "猫"
+      1: ["images/baseball.png", "野球"]
+      2: ["images/soccer.png", "サッカー"]
     answer:
       answer: [2]
 
-  # 画像4択（キャプション付き）
-  - title: "画像クイズ"
+  # ===============================
+  # image-4taku: 画像4択
+  # ===============================
+  - title: "画像4択テスト"
     layout:
       type: "select"
-      mini-title: "どれが王冠？"
+      mini-title: "テニスはどれ？"
+    selections:
+      1: "images/baseball.png"
+      2: "images/soccer.png"
+      3: "images/tennis.png"
+      4: "images/swimming.png"
+    answer:
+      answer: [3]
+
+  # ===============================
+  # image-4taku: 画像4択（キャプション付き）
+  # ===============================
+  - title: "画像4択キャプション付き"
+    layout:
+      type: "select"
+      mini-title: "水泳はどれ？"
     selections:
       1: ["images/baseball.png", "野球"]
       2: ["images/soccer.png", "サッカー"]
       3: ["images/tennis.png", "テニス"]
       4: ["images/swimming.png", "水泳"]
     answer:
-      answer: [1]
+      answer: [4]
 
-  # 画像4択（キャプションなし）
-  - title: "画像のみ"
+  # ===============================
+  # image-6taku: 画像6択
+  # ===============================
+  - title: "画像6択テスト"
     layout:
       type: "select"
-      mini-title: "選んでください"
+      mini-title: "王冠はどれ？"
     selections:
-      1: "images/crown.png"
-      2: "images/crown.png"
-      3: "images/crown.png"
-      4: "images/crown.png"
+      1: "images/baseball.png"
+      2: "images/soccer.png"
+      3: "images/tennis.png"
+      4: "images/swimming.png"
+      5: "images/crown.png"
+      6: "images/baseball.png"
+    answer:
+      answer: [5]
+
+  # ===============================
+  # image-6taku: 画像6択（キャプション付き）
+  # ===============================
+  - title: "画像6択キャプション付き"
+    layout:
+      type: "select"
+      mini-title: "好きなものは？"
+    selections:
+      1: ["images/baseball.png", "野球"]
+      2: ["images/soccer.png", "サッカー"]
+      3: ["images/tennis.png", "テニス"]
+      4: ["images/swimming.png", "水泳"]
+      5: ["images/crown.png", "王冠"]
+      6: ["images/baseball.png", "野球2"]
+    answer:
+      answer: [5]
+
+  # ===============================
+  # image-4taku-h2: 大画像＋4択
+  # ===============================
+  - title: "大画像＋4択テスト"
+    layout:
+      type: "select"
+      mini-title: "この花は？"
+      large-image: "images/himawari.jpg"
+    selections:
+      1: "ひまわり"
+      2: "バラ"
+      3: "チューリップ"
+      4: "コスモス"
     answer:
       answer: [1]
+
+  # ===============================
+  # image-4taku-h2: 大画像＋画像4択
+  # ===============================
+  - title: "大画像＋画像4択"
+    layout:
+      type: "select"
+      mini-title: "同じものは？"
+      large-image: "images/crown.png"
+    selections:
+      1: "images/baseball.png"
+      2: "images/soccer.png"
+      3: "images/crown.png"
+      4: "images/tennis.png"
+    answer:
+      answer: [3]
+
