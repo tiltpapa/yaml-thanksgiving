@@ -1,0 +1,151 @@
+/* ===============================
+   text-quiz.css - テキスト選択肢用スタイル
+   上位クラス: .text-quiz
+   サブクラス: .taku-2, .taku-4, .taku-6
+================================ */
+
+/* ===============================
+   テキスト選択肢の問題文（h1）- 横書き
+================================ */
+.text-quiz h1 {
+  width: 600px;
+  height: 100px;
+  position: relative;
+  margin-left: 240px;
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  border-radius: 12px;
+  padding: 3px 32px 3px 90px;
+  font-size: 1.6em;
+  font-weight: normal;
+  line-height: 1.4;
+  align-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Qマーク */
+.text-quiz h1::before {
+  content: "Q";
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  color: #00cc66;
+  font-size: 1.4em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aマーク（回答スライド） */
+.text-quiz.answer h1::before {
+  content: "A";
+  color: #cc0000;
+}
+
+/* ===============================
+   テキスト選択肢リスト共通
+================================ */
+.text-quiz ol {
+  list-style: none;
+  padding: 0;
+  width: 720px;
+  margin: 0 auto;
+}
+
+.text-quiz.taku-4 ol { margin-top: 50px; }
+.text-quiz.taku-2 ol { margin-top: 50px; }
+.text-quiz.taku-6 ol { margin-top: 30px; }
+
+/* ===============================
+   テキスト選択肢アイテム共通
+================================ */
+.text-quiz ol li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  font-weight: normal;
+  text-align: left;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+}
+
+/* 4択 */
+.text-quiz.taku-4 ol li {
+  padding: 20px 32px 20px 90px;
+  margin-bottom: 18px;
+  font-size: 1.6em;
+}
+
+/* 2択（高さ約2倍） */
+.text-quiz.taku-2 ol li {
+  padding: 60px 32px 60px 90px;
+  margin-bottom: 18px;
+  font-size: 2em;
+}
+
+/* 6択（高さ4/5） */
+.text-quiz.taku-6 ol li {
+  padding: 16px 32px 16px 90px;
+  margin-bottom: 10px;
+  font-size: 1.4em;
+}
+
+/* ===============================
+   テキスト選択肢の番号バッジ
+================================ */
+.text-quiz ol li::before {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2em;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* ===============================
+   テキスト選択肢のタイマー位置
+================================ */
+.text-quiz .countdown-timer {
+  top: 30px;
+  right: 280px;
+}
+
+/* ===============================
+   テキスト選択肢の回答数表示
+================================ */
+.text-quiz.answer ol li::after {
+  content: attr(data-count);
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(to right, #cccccc, #ffffff 30%);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 3px inset #000;
+  min-width: 40px;
+  min-height: 30px;
+  color: #003366;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.3);
+}

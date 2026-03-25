@@ -1,0 +1,281 @@
+/* ===============================
+   image-quiz.css - 画像選択肢用スタイル
+   上位クラス: .image-quiz
+   サブクラス: .taku-2, .taku-4, .taku-6, .large-image
+================================ */
+
+/* ===============================
+   画像選択肢の縦書き問題文（h1）
+================================ */
+.image-quiz h1 {
+  position: absolute;
+  right: 90px;
+  top: 30px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  width: 120px;
+  height: 530px;
+  margin: 0;
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  border-radius: 12px;
+  padding: 70px 12px 24px 12px;
+  font-size: 1.6em;
+  font-weight: normal;
+  line-height: 1.4;
+  align-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Qマーク（縦書き用） */
+.image-quiz h1::before {
+  content: "Q";
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  color: #00cc66;
+  font-size: 1.4em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aマーク（回答スライド） */
+.image-quiz.answer h1::before {
+  content: "A";
+  color: #cc0000;
+}
+
+/* ===============================
+   画像選択肢のタイマー位置
+================================ */
+.image-quiz .countdown-timer {
+  bottom: 40px;
+  right: 100px;
+}
+
+/* ===============================
+   画像選択肢リスト共通
+================================ */
+.image-quiz ol {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: grid;
+}
+
+.image-quiz.taku-4 ol {
+  width: 800px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.image-quiz.taku-2 ol {
+  width: 800px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.image-quiz.taku-6 ol {
+  width: 1000px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+}
+
+/* ===============================
+   画像選択肢アイテム共通
+================================ */
+.image-quiz ol li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  font-size: 2em;
+  font-weight: normal;
+  text-align: center;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-quiz.taku-4 ol li {
+  padding: 50px 10px 20px 10px;
+  height: 320px;
+  gap: 8px;
+}
+
+.image-quiz.taku-2 ol li {
+  padding: 60px 10px 10px 10px;
+  height: 496px;
+  gap: 12px;
+}
+
+.image-quiz.taku-6 ol li {
+  padding: 50px 8px 12px 8px;
+  height: 320px;
+  gap: 6px;
+}
+
+/* ===============================
+   画像選択肢の画像サイズ
+================================ */
+.image-quiz.taku-4 ol li img,
+.image-quiz.taku-4 ol li video {
+  max-width: 100%;
+  max-height: 240px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.image-quiz.taku-2 ol li img,
+.image-quiz.taku-2 ol li video {
+  max-width: 100%;
+  max-height: 360px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.image-quiz.taku-6 ol li img,
+.image-quiz.taku-6 ol li video {
+  max-width: 100%;
+  max-height: 240px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ===============================
+   画像選択肢の番号バッジ（左上）
+================================ */
+.image-quiz ol li::before {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  transform: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2em;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* ===============================
+   画像選択肢のキャプション
+================================ */
+.image-quiz ol li .caption {
+  position: absolute;
+  bottom: 5px;
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  font-weight: bold;
+  border: 3px solid #003366;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ===============================
+   画像選択肢の回答数表示
+================================ */
+.image-quiz.answer ol li::after {
+  content: attr(data-count);
+  position: absolute;
+  right: 20px;
+  top: 80%;
+  transform: translateY(-50%);
+  background: linear-gradient(to right, #cccccc, #ffffff 30%);
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 3px inset #000;
+  min-width: 40px;
+  min-height: 30px;
+  color: #003366;
+  font-size: 1.2em;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ===============================
+   大画像＋選択肢 (.large-image)
+================================ */
+
+/* h2: 大きな画像表示エリア */
+.image-quiz.large-image h2 {
+  margin: 0 auto;
+  transform: translateX(-60px);
+  width: 800px;
+  height: 420px;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 8px inset #ffffff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  box-sizing: border-box;
+}
+
+.image-quiz.large-image h2 img,
+.image-quiz.large-image h2 video {
+  max-width: 100%;
+  max-height: 380px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 選択肢リスト */
+.image-quiz.large-image ol {
+  margin: 10px auto;
+  transform: translateX(-60px);
+  width: 800px;
+}
+
+.image-quiz.large-image.taku-2 ol { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.image-quiz.large-image.taku-4 ol { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+/* 選択肢アイテム */
+.image-quiz.large-image ol li {
+  padding: 42px 8px 8px 8px;
+  height: 220px;
+  box-sizing: border-box;
+}
+
+/* 選択肢内の画像サイズ */
+.image-quiz.large-image ol li img,
+.image-quiz.large-image ol li video {
+  max-width: 100%;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 番号バッジ（小さめ） */
+.image-quiz.large-image ol li::before {
+  width: 40px;
+  height: 40px;
+  font-size: 0.9em;
+}

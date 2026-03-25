@@ -1,0 +1,302 @@
+/* ===============================
+   champion.css - チャンピオン回答スタイル
+   - 並び替えクイズの回答表示
+================================ */
+
+/* ===============================
+   チャンピオン回答コンテナ
+================================ */
+.champion-answer,
+.reveal-answer {
+  position: relative;
+}
+
+/* 非表示のスライドの要素を隠す */
+section:not(.present) .champion-container,
+section:not(.present) .champion-title {
+  display: none;
+}
+
+.champion-answer .champion-title,
+.reveal-answer .champion-title {
+  position: absolute;
+  width: 440px;
+  height: 90px;
+  top: -30px;
+  left: 150px;
+  margin-top: 0;
+  margin-left: calc((100% - 700px) / 2);
+  background: linear-gradient(#fff, #dfefff);
+  color: #003366;
+  border-radius: 12px;
+  padding: 3px 32px 3px 90px;
+  font-size: 1.6em;
+  font-weight: normal;
+  line-height: 1.4;
+  align-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.champion-answer .champion-title::before,
+.reveal-answer .champion-title::before {
+  content: "A";
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.6em;
+  font-weight: bold;
+  color: #ff6666;
+}
+
+/* ===============================
+   チャンピオンレイアウト
+================================ */
+.champion-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 700px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.champion-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+}
+
+.champion-left.grayscale {
+  filter: grayscale(100%);
+}
+
+.champion-right {
+  flex: 1;
+  padding-top: 80px;
+}
+
+/* ===============================
+   王冠アイコン
+================================ */
+.crown-icon {
+  width: 80px;
+  height: 70px;
+  position: relative;
+  margin-bottom: 10px;
+  background-image: url('./images/crown.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 2;
+}
+
+/* ===============================
+   回答シンボル（矢印内の番号）
+================================ */
+.answer-symbols {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 矢印の棒部分（記号の背景） */
+.answer-symbols::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 120%;
+  background: linear-gradient(#ffcc44, #ff4444);
+  z-index: -1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.symbol-item {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 2px 4px rgba(0,0,0,0.4);
+}
+
+/* シンボルの色 */
+.symbol-item[data-color="1"] { background: #3498db; }
+.symbol-item[data-color="2"] { background: #e74c3c; }
+.symbol-item[data-color="3"] { background: #2ecc71; }
+.symbol-item[data-color="4"] { background: #f1c40f; }
+.symbol-item[data-color="5"] { background: #c5392a; }
+.symbol-item[data-color="6"] { background: #ff0cd6; }
+
+/* ===============================
+   矢印アイコン
+================================ */
+.arrow-icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  margin-top: 0;
+}
+
+/* 矢印の先端（三角形） */
+.arrow-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-top: 60px solid #ff4444;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+  z-index: 1;
+}
+
+/* ===============================
+   チャンピオン選択肢リスト
+================================ */
+.champion-choices {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.champion-choices li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  padding: 12px 32px 12px 90px;
+  margin-bottom: 8px;
+  font-size: 1.3em;
+  font-weight: normal;
+  text-align: left;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  height: 60px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.champion-choices li::before {
+  content: attr(data-symbol);
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* 選択肢の色 */
+.champion-choices li.color-1::before { background: #3498db; }
+.champion-choices li.color-2::before { background: #e74c3c; }
+.champion-choices li.color-3::before { background: #2ecc71; }
+.champion-choices li.color-4::before { background: #f1c40f; }
+.champion-choices li.color-5::before { background: #c5392a; }
+.champion-choices li.color-6::before { background: #ff0cd6; }
+
+/* ===============================
+   6択用サイズ調整
+================================ */
+.champion-6taku .champion-choices li {
+  height: 48px;
+  margin-bottom: 4px;
+  padding: 8px 24px 8px 70px;
+  font-size: 1.1em;
+}
+
+.champion-6taku .symbol-item {
+  width: 48px;
+  height: 48px;
+  font-size: 1.4em;
+}
+
+.champion-6taku .answer-symbols { gap: 4px; }
+
+.champion-6taku .champion-choices li::before {
+  width: 38px;
+  height: 38px;
+  left: 18px;
+  font-size: 1em;
+}
+
+.champion-6taku .champion-right { padding-top: 80px; }
+
+/* ===============================
+   2択用サイズ調整
+================================ */
+.champion-2taku .champion-choices li {
+  height: 100px;
+  margin-bottom: 16px;
+  padding: 20px 32px 20px 100px;
+  font-size: 1.5em;
+}
+
+.champion-2taku .symbol-item {
+  width: 80px;
+  height: 80px;
+  font-size: 2.2em;
+}
+
+.champion-2taku .answer-symbols { gap: 16px; }
+.champion-2taku .answer-symbols::before { width: 50px; }
+
+.champion-2taku .champion-choices li::before {
+  width: 60px;
+  height: 60px;
+  left: 20px;
+  font-size: 1.4em;
+}
+
+.champion-2taku .champion-right { padding-top: 80px; }
+
+/* ===============================
+   正解 or 残念演出
+================================ */
+.result-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-text {
+  font-size: 5em;
+  font-weight: bold;
+  text-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  animation: result-appear 0.5s ease-out;
+}
+
+@keyframes result-appear {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
