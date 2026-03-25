@@ -112,6 +112,7 @@ html, body {
 .answer.image-4taku h1::before,
 .answer.image-2taku h1::before,
 .answer.image-6taku h1::before,
+.answer.image-2taku-h2 h1::before,
 .answer.image-4taku-h2 h1::before {
   content: "A";
   color: #cc0000;
@@ -192,6 +193,7 @@ html, body {
 .image-4taku h1,
 .image-2taku h1,
 .image-6taku h1,
+.image-2taku-h2 h1,
 .image-4taku-h2 h1 {
   position: absolute;
   right: 90px;
@@ -216,9 +218,10 @@ html, body {
 .image-4taku .countdown-timer,
 .image-2taku .countdown-timer,
 .image-6taku .countdown-timer,
+.image-2taku-h2 .countdown-timer,
 .image-4taku-h2 .countdown-timer {
   bottom: 40px;
-   right: 100px;
+  right: 100px;
 }
 
 /* text-Xtaku用のタイマー位置調整 */
@@ -234,6 +237,7 @@ html, body {
 .image-4taku h1::before,
 .image-2taku h1::before,
 .image-6taku h1::before,
+.image-2taku-h2 h1::before,
 .image-4taku-h2 h1::before {
   content: "Q";
   position: absolute;
@@ -1063,6 +1067,7 @@ section:not(.present) .champion-title {
 ================================ */
 
 /* h2: 大きな画像表示エリア */
+.image-2taku-h2 h2,
 .image-4taku-h2 h2 {
   margin: 0 auto;
   transform: translateX(-60px);
@@ -1087,6 +1092,18 @@ section:not(.present) .champion-title {
   object-fit: contain;
 }
 
+/* ol: 2つの選択肢を横一列 */
+.image-2taku-h2 ol {
+  list-style: none;
+  padding: 0;
+  margin: 10px auto;
+  transform: translateX(-60px);
+  width: 800px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
 /* ol: 4つの選択肢を横一列 */
 .image-4taku-h2 ol {
   list-style: none;
@@ -1100,6 +1117,7 @@ section:not(.present) .champion-title {
 }
 
 /* 各選択肢 */
+.image-2taku-h2 ol li,
 .image-4taku-h2 ol li {
   position: relative;
   background: linear-gradient(#001a66, #0b2a70);
@@ -1118,6 +1136,8 @@ section:not(.present) .champion-title {
 }
 
 /* 選択肢内の画像サイズ */
+.image-2taku-h2 ol li img,
+.image-2taku-h2 ol li video,
 .image-4taku-h2 ol li img,
 .image-4taku-h2 ol li video {
   max-width: 100%;
@@ -1128,6 +1148,7 @@ section:not(.present) .champion-title {
 }
 
 /* 番号（左上） */
+.image-2taku-h2 ol li::before,
 .image-4taku-h2 ol li::before {
   position: absolute;
   left: 8px;
@@ -1149,6 +1170,7 @@ section:not(.present) .champion-title {
 }
 
 /* 回答数表示位置 */
+.image-2taku-h2 ol li::after,
 .image-4taku-h2 ol li::after {
   top: 80%;
 }

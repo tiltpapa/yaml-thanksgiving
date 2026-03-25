@@ -125,6 +125,7 @@ function determineLayoutClass(selections, layout) {
     const hasLargeImage = !!layout['large-image'];
     
     if (hasLargeImage) {
+        if (count <= 2) return 'image-2taku-h2';
         return 'image-4taku-h2';
     }
     
