@@ -16,7 +16,9 @@ export function renderQuestionSlide(question) {
 
     // タイトル（問題文）
     const title = document.createElement('h1');
-    title.textContent = layout['mini-title'] || question.title || '';
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = layout['mini-title'] || question.title || '';
+    title.appendChild(titleSpan);
     container.appendChild(title);
 
     // 大きな画像がある場合

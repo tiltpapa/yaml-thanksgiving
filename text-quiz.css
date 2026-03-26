@@ -12,15 +12,36 @@
   height: 100px;
   position: relative;
   margin-left: 240px;
-  background: linear-gradient(#fff, #dfefff);
-  color: #003366;
-  border-radius: 12px;
+  background: linear-gradient(180deg, #0099cc, #0066aa);
+  color: #0b2a70;
+  border-radius: 16px;
   padding: 3px 32px 3px 90px;
   font-size: 1.6em;
   font-weight: normal;
   line-height: 1.4;
   align-content: center;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* テキスト部分の白い領域 */
+.text-quiz h1::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 90px;
+  right: 10px;
+  bottom: 10px;
+  background: #fff;
+  border: 3px solid #0077aa;
+  border-radius: 12px;
+  z-index: 0;
+}
+
+/* テキストを白い領域の上に表示 */
+.text-quiz h1 span {
+  position: relative;
+  z-index: 1;
+  margin-left: 20px;
 }
 
 /* Qマーク */
@@ -35,17 +56,28 @@
   border-radius: 50%;
   background: transparent;
   color: #00cc66;
-  font-size: 1.4em;
+  font-size: 1.6em;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  text-shadow: 4px 4px 4px #004d80;
 }
 
 /* Aマーク（回答スライド） */
 .text-quiz.answer h1::before {
   content: "A";
-  color: #cc0000;
+  color: #ff8ad8;
+  text-shadow: 4px 4px 4px #ff2600;
+}
+
+/* 回答スライドの背景色 */
+.text-quiz.answer h1 {
+  background: linear-gradient(180deg, #ee6644, #cc4433);
+}
+
+.text-quiz.answer h1::after {
+  border-color: #cc4433;
 }
 
 /* ===============================
