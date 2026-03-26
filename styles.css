@@ -43,10 +43,18 @@ html, body {
   height: 720px;
   color: #fff;
   background: linear-gradient(135deg, #aaeeff, #00aaff);
-  font-family: 'LINE Seed JP', 'Noto Sans JP', 'ヒラギノ角ゴシック', Meiryo, "MS Gothic", sans-serif;
+  font-family: Meiryo, sans-serif;
   overflow: hidden;
   padding: 30px 40px;
   box-sizing: border-box;
+}
+
+h1, h2, li {
+  font-family: 'LINE Seed JP';
+}
+
+h1::before, li::before, li::after {
+  font-family: Meiryo, sans-serif;
 }
 
 /* タイトルスライド */

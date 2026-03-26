@@ -65,14 +65,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-shadow: 4px 4px 4px #004d80;
+  text-shadow: 5px 5px 5px #004d80;
 }
 
 /* Aマーク（回答スライド） */
 .image-quiz.answer h1::before {
   content: "A";
   color: #ff8ad8;
-  text-shadow: 4px 4px 4px #ff2600;
+  text-shadow: 5px 5px 5px #ff2600;
 }
 
 /* 回答スライドの背景色 */
