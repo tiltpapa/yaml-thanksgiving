@@ -112,6 +112,7 @@
   width: 800px;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+  margin: 70px auto;
 }
 
 .image-quiz.taku-6 ol {
@@ -147,7 +148,7 @@
 
 .image-quiz.taku-2 ol li {
   padding: 60px 10px 10px 10px;
-  height: 496px;
+  height: 500px;
   gap: 12px;
 }
 
