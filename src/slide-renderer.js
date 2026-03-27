@@ -8,9 +8,7 @@
 export function renderQuestionSlide(question) {
     const container = document.createElement('div');
     const layout = question.layout || {};
-    const type = layout.type || 'select';
     const selections = question.selections || {};
-    const selectionCount = Object.keys(selections).length;
     
     // レイアウトクラスを決定
     const layoutClass = determineLayoutClass(selections, layout);
@@ -18,7 +16,9 @@ export function renderQuestionSlide(question) {
 
     // タイトル（問題文）
     const title = document.createElement('h1');
-    title.textContent = layout['mini-title'] || question.title || '';
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = layout['mini-title'] || question.title || '';
+    title.appendChild(titleSpan);
     container.appendChild(title);
 
     // 大きな画像がある場合
@@ -33,11 +33,8 @@ export function renderQuestionSlide(question) {
 
     // 選択肢リスト
     const ol = document.createElement('ol');
-    const hasImages = Object.values(selections).some(v => 
-        isImagePath(v) || (Array.isArray(v) && isImagePath(v[0]))
-    );
 
-    for (const [key, value] of Object.entries(selections)) {
+    for (const value of Object.values(selections)) {
         const li = document.createElement('li');
         
         if (Array.isArray(value)) {
@@ -77,7 +74,19 @@ export function renderQuestionSlide(question) {
 }
 
 /**
- * 回答スライドを生成
+ * 回答数表示スライドを生成
+ * answerクラスでmaru-Xなし = 回答数表示用
+ */
+export function renderResultSlide(question) {
+    const container = renderQuestionSlide(question);
+    container.className = container.className.replace('quiz', 'answer');
+    
+    return container;
+}
+
+/**
+ * 回答スライドを生成（正解表示）
+ * answerクラス + maru-X = 正解ハイライト
  */
 export function renderAnswerSlide(question) {
     const container = renderQuestionSlide(question);
@@ -116,6 +125,7 @@ export function renderTitleSlide(question) {
 
 /**
  * レイアウトクラスを決定
+ * 新クラス構造: [type]-quiz taku-[n] [large-image]
  */
 function determineLayoutClass(selections, layout) {
     const count = Object.keys(selections).length;
@@ -124,15 +134,14 @@ function determineLayoutClass(selections, layout) {
     );
     const hasLargeImage = !!layout['large-image'];
     
+    const typeClass = hasImages ? 'image-quiz' : 'text-quiz';
+    const takuClass = count <= 2 ? 'taku-2' : count <= 4 ? 'taku-4' : 'taku-6';
+    
     if (hasLargeImage) {
-        return 'image-4taku-h2';
+        return `${typeClass} ${takuClass} large-image`;
     }
     
-    const prefix = hasImages ? 'image' : 'text';
-    
-    if (count <= 2) return `${prefix}-2taku`;
-    if (count <= 4) return `${prefix}-4taku`;
-    return `${prefix}-6taku`;
+    return `${typeClass} ${takuClass}`;
 }
 
 /**
