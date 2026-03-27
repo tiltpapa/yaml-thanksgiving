@@ -221,12 +221,30 @@ h1::before, li::before, li::after {
 .maru-6 ol li:nth-child(6) { animation: maru-blink 1.8s ease-in-out forwards; animation-play-state: paused; }
 
 /* スライド表示時にアニメーション開始 */
-.present > .present .maru-this,
-.present > .present.maru-1 ol li:nth-child(1),
-.present > .present.maru-2 ol li:nth-child(2),
-.present > .present.maru-3 ol li:nth-child(3),
-.present > .present.maru-4 ol li:nth-child(4),
-.present > .present.maru-5 ol li:nth-child(5),
-.present > .present.maru-6 ol li:nth-child(6) {
+.slide .maru-this,
+.slide .maru-1 ol li:nth-child(1),
+.slide .maru-2 ol li:nth-child(2),
+.slide .maru-3 ol li:nth-child(3),
+.slide .maru-4 ol li:nth-child(4),
+.slide .maru-5 ol li:nth-child(5),
+.slide .maru-6 ol li:nth-child(6) {
   animation-play-state: running;
+}
+
+/* ===============================
+   回答数表示（answerクラス内）
+================================ */
+.answer ol li .answer-count {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.3rem 1rem;
+    border-radius: 0.5rem;
+    min-width: 3rem;
+    text-align: center;
 }

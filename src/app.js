@@ -1,5 +1,5 @@
 import { loadQuizYaml } from './yaml-loader.js';
-import { renderQuestionSlide, renderAnswerSlide, renderTitleSlide } from './slide-renderer.js';
+import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide } from './slide-renderer.js';
 import { SlideController } from './slide-controller.js';
 
 async function init() {
@@ -34,7 +34,16 @@ async function init() {
                     element: renderQuestionSlide(question)
                 });
 
-                // 回答スライド（縦方向に配置）
+                // 回答数表示スライド（縦方向に配置）
+                if (question.answer) {
+                    verticalStack.push({
+                        type: 'result',
+                        data: question,
+                        element: renderResultSlide(question)
+                    });
+                }
+
+                // 回答スライド（正解表示、縦方向に配置）
                 if (question.answer) {
                     verticalStack.push({
                         type: 'answer',

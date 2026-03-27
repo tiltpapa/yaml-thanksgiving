@@ -74,7 +74,19 @@ export function renderQuestionSlide(question) {
 }
 
 /**
- * 回答スライドを生成
+ * 回答数表示スライドを生成
+ * answerクラスでmaru-Xなし = 回答数表示用
+ */
+export function renderResultSlide(question) {
+    const container = renderQuestionSlide(question);
+    container.className = container.className.replace('quiz', 'answer');
+    
+    return container;
+}
+
+/**
+ * 回答スライドを生成（正解表示）
+ * answerクラス + maru-X = 正解ハイライト
  */
 export function renderAnswerSlide(question) {
     const container = renderQuestionSlide(question);
