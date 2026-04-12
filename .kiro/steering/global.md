@@ -5,7 +5,7 @@ inclusion: always
 # プロジェクトガイドライン
 
 ## 言語設定
-- **コミュニケーション**: 回答は常に日本語で行う
+- **コミュニケーション**: 回答は常に日本語で行う、体言止めを意識する
 
 ## プロジェクトの前提
 - Reveal.jsを使用していたプロジェクト`https://github.com/tiltpapa/reveal-thanksgiving`を改善する試み。

@@ -1,3 +1,5 @@
+import { CountdownTimer } from '../lib/countdown.js';
+
 /**
  * スライドの2次元ナビゲーションを管理
  * Reveal.js互換の横方向・縦方向スライド構造
@@ -10,6 +12,7 @@ export class SlideController {
         this.indexH = 0; // 横方向インデックス
         this.indexV = 0; // 縦方向インデックス
         this.onSlideChange = null;
+        this._timer = new CountdownTimer();
         
         this.bindEvents();
         this.initHashNavigation();
@@ -46,9 +49,16 @@ export class SlideController {
         
         const slide = this.slides[this.indexH]?.[this.indexV];
         if (!slide) return;
+
+        this._timer.stop();
         
         this.container.innerHTML = '';
         this.container.appendChild(slide.element);
+
+        // questionスライドのみタイマーを起動
+        if (slide.type === 'question') {
+            this._timer.start(slide.element);
+        }
         
         this.updateHash();
         

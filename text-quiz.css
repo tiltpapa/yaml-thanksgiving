@@ -117,7 +117,7 @@
 
 /* 2択（高さ約2倍） */
 .text-quiz.taku-2 ol li {
-  padding: 60px 32px 60px 90px;
+  padding: 60px 32px 60px 100px;
   margin-bottom: 18px;
   font-size: 2em;
 }
@@ -150,6 +150,11 @@
   box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
   inset 0 -2px 5px rgba(0,0,0,0.35),
   0 1px 2px rgba(0,0,0,0.4);
+}
+
+.text-quiz.taku-2 ol li::before {
+  width: 60px;
+  height: 60px;
 }
 
 /* ===============================
