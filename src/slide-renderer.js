@@ -64,10 +64,12 @@ export function renderQuestionSlide(question) {
     }
     container.appendChild(ol);
 
-    // タイマー
+    // タイマー（time_limit 未設定時は10秒）
+    const timeLimit = question.time_limit ?? 10;
     const timer = document.createElement('div');
     timer.className = 'countdown-timer';
-    timer.textContent = '10';
+    timer.dataset.limit = timeLimit;
+    timer.textContent = timeLimit;
     container.appendChild(timer);
 
     return container;

@@ -11,6 +11,7 @@ questions:
   # text-2taku: テキスト2択
   # ===============================
   - title: "テキスト2択テスト"
+    time_limit: 10
     layout:
       type: "select"
       mini-title: "どちらが好き？"
@@ -24,6 +25,7 @@ questions:
   # text-4taku: テキスト4択
   # ===============================
   - title: "テキスト4択テスト"
+    time_limit: 15
     layout:
       type: "select"
       mini-title: "どれが好き？"
