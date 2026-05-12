@@ -106,6 +106,41 @@ export function renderAnswerSlide(question) {
 }
 
 /**
+ * 前フリスライドを生成
+ * lead-in: { text: string|string[], image: string } に対応
+ */
+export function renderLeadInSlide(question) {
+    const container = document.createElement('div');
+    container.className = 'lead-in-slide';
+
+    const leadIn = question['lead-in'] || {};
+
+    // テキスト（複数行対応）
+    if (leadIn.text) {
+        const texts = Array.isArray(leadIn.text) ? leadIn.text : [leadIn.text];
+        const textEl = document.createElement('div');
+        textEl.className = 'lead-in-text';
+        for (const line of texts) {
+            const p = document.createElement('p');
+            p.textContent = line;
+            textEl.appendChild(p);
+        }
+        container.appendChild(textEl);
+    }
+
+    // 画像
+    if (leadIn.image) {
+        const img = document.createElement('img');
+        img.src = leadIn.image;
+        img.alt = '';
+        img.className = 'lead-in-image';
+        container.appendChild(img);
+    }
+
+    return container;
+}
+
+/**
  * タイトルスライドを生成
  */
 export function renderTitleSlide(question) {

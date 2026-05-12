@@ -1,5 +1,5 @@
 import { loadQuizYaml } from './yaml-loader.js';
-import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide } from './slide-renderer.js';
+import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide } from './slide-renderer.js';
 import { SlideController } from './slide-controller.js';
 
 async function init() {
@@ -23,6 +23,15 @@ async function init() {
                     type: 'title',
                     data: question,
                     element: renderTitleSlide(question)
+                });
+            }
+
+            // 前フリスライド
+            if (question['lead-in']) {
+                verticalStack.push({
+                    type: 'lead-in',
+                    data: question,
+                    element: renderLeadInSlide(question)
                 });
             }
             

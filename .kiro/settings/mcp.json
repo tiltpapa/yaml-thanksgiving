@@ -12,7 +12,10 @@
         "press_key",
         "new_page",
         "take_snapshot",
-        "list_pages"
+        "list_pages",
+        "list_console_messages",
+        "get_console_message",
+        "list_network_requests"
       ]
     },
     "reveal-thanksgiving": {

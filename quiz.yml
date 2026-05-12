@@ -161,18 +161,40 @@ questions:
       answer: [1]
 
   # ===============================
-  # image-4taku-h2: 大画像＋画像4択
+  # 前フリ付き: テキスト4択
   # ===============================
-  - title: "大画像＋画像4択"
+  - title: "前フリ付きテスト"
+    lead-in:
+      text: "ひまわり"
+      image: "images/himawari.jpg"
     layout:
       type: "select"
-      mini-title: "同じものは？"
-      large-image: "images/crown.png"
+      mini-title: "この花は？"
     selections:
-      1: "images/baseball.png"
-      2: "images/soccer.png"
-      3: "images/crown.png"
-      4: "images/tennis.png"
+      1: "ひまわり"
+      2: "バラ"
+      3: "チューリップ"
+      4: "コスモス"
     answer:
-      answer: [3]
+      answer: [1]
+
+  # ===============================
+  # 前フリ付き: 複数行テキスト
+  # ===============================
+  - title: "前フリ複数行テスト"
+    lead-in:
+      text:
+        - "これは何でしょう？"
+        - "ヒント: 夏の花"
+      image: "images/himawari-land.jpg"
+    layout:
+      type: "select"
+      mini-title: "この花は？"
+    selections:
+      1: "ひまわり"
+      2: "バラ"
+      3: "チューリップ"
+      4: "コスモス"
+    answer:
+      answer: [1]
 
