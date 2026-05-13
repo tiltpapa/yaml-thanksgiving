@@ -1,0 +1,232 @@
+/* ===============================
+   sort-quiz.css - 並び替えクイズ用スタイル
+   上位クラス: .sort
+   問題スライド: .quiz.sort
+   正解スライド: .answer.sort
+================================ */
+
+/* ===============================
+   並び替えクイズ：バッジを A B C D に
+   問題スライド: styles.css の choice カウンターを upper-alpha で表示
+   正解スライド: data-badge 属性から取得（元の選択肢番号に連動）
+================================ */
+
+/* 問題スライドのバッジ: A B C D（styles.css の counter(choice) を上書き） */
+.quiz.sort ol li::before {
+  content: counter(choice, upper-alpha);
+}
+
+/* 正解スライドのバッジ: data-badge 属性から取得 */
+.answer.sort ol li::before {
+  content: attr(data-badge);
+}
+
+/* ===============================
+   正解スライドのバッジ色：元の選択肢番号に連動
+   badge-1=青, badge-2=赤, badge-3=緑, badge-4=黄, ...
+================================ */
+.answer.sort ol li.badge-1::before { background: #3498db; }
+.answer.sort ol li.badge-2::before { background: #e74c3c; }
+.answer.sort ol li.badge-3::before { background: #2ecc71; }
+.answer.sort ol li.badge-4::before { background: #f1c40f; }
+.answer.sort ol li.badge-5::before { background: #c5392a; }
+.answer.sort ol li.badge-6::before { background: #ff0cd6; }
+
+/* ===============================
+   正解スライド：テキスト選択肢
+   text-quiz.css のスタイルを継承
+================================ */
+
+/* 未開示アイテム：完全非表示 */
+.sort ol li.sort-hidden {
+  visibility: hidden;
+}
+
+/* 正解スライドの選択肢リスト全体に枠 */
+.answer.sort.text-quiz ol {
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 12px;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.15);
+}
+
+/* ===============================
+   正解スライド：画像選択肢（横並びレイアウト）
+   バッジ | サムネイル | キャプション
+================================ */
+
+/* 画像問題の正解スライドは text-quiz レイアウトを使う */
+.answer.sort.image-quiz {
+  /* image-quiz の縦書きh1を上書きして横書きに */
+}
+
+.answer.sort.image-quiz h1 {
+  position: relative;
+  right: auto;
+  top: auto;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  width: 600px;
+  height: 100px;
+  margin-left: 240px;
+  background: linear-gradient(180deg, #ee6644, #cc4433);
+  color: #0b2a70;
+  border-radius: 16px;
+  padding: 3px 32px 3px 90px;
+  font-size: 1.6em;
+  font-weight: normal;
+  line-height: 1.4;
+  align-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.answer.sort.image-quiz h1::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 90px;
+  right: 10px;
+  bottom: 10px;
+  background: #fff;
+  border: 3px solid #cc4433;
+  border-radius: 12px;
+  z-index: 0;
+}
+
+.answer.sort.image-quiz h1 span {
+  position: relative;
+  z-index: 1;
+  margin-left: 20px;
+}
+
+.answer.sort.image-quiz h1::before {
+  content: "A";
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: transparent;
+  color: #ff8ad8;
+  font-size: 1.6em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 4px 4px 4px #ff0cd6;
+}
+
+/* 画像問題の正解スライドのリスト */
+.answer.sort.image-quiz ol {
+  list-style: none;
+  padding: 12px;
+  width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.15);
+  box-sizing: border-box;
+}
+
+.answer.sort.image-quiz.taku-4 ol { margin-top: 30px; }
+.answer.sort.image-quiz.taku-2 ol { margin-top: 50px; }
+.answer.sort.image-quiz.taku-6 ol { margin-top: 10px; }
+
+/* 画像問題の正解スライドのアイテム（横並び） */
+.answer.sort.image-quiz ol li {
+  position: relative;
+  background: linear-gradient(#001a66, #0b2a70);
+  border: 4px ridge #000;
+  border-radius: 16px;
+  font-weight: normal;
+  text-align: left;
+  box-shadow: inset 0 1px 3px rgba(255,255,255,0.2), 0 3px 6px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 20px 10px 90px;
+  margin-bottom: 12px;
+  height: 80px;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.answer.sort.image-quiz.taku-6 ol li {
+  margin-bottom: 6px;
+  height: 64px;
+  padding: 6px 16px 6px 80px;
+}
+
+/* バッジ位置（左） */
+.answer.sort.image-quiz ol li::before {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2em;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 3px rgba(255,255,255,0.4),
+              inset 0 -2px 5px rgba(0,0,0,0.35),
+              0 1px 2px rgba(0,0,0,0.4);
+}
+
+/* サムネイル画像：強制的に小さく＋枠 */
+.answer.sort.image-quiz ol li img.sort-thumb {
+  width: 56px;
+  height: 56px;
+  max-width: 56px;
+  max-height: 56px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+}
+
+.answer.sort.image-quiz.taku-6 ol li img.sort-thumb {
+  width: 44px;
+  height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+}
+
+/* キャプションテキスト */
+.sort-caption {
+  font-size: 1.4em;
+  color: #fff;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.answer.sort.image-quiz.taku-6 .sort-caption {
+  font-size: 1.2em;
+}
+
+/* 未開示アイテム（画像問題）：完全非表示 */
+.answer.sort.image-quiz ol li.sort-hidden {
+  visibility: hidden;
+}
+
+/* ===============================
+   タイマー・回答数非表示（正解スライドには不要）
+================================ */
+.answer.sort .countdown-timer {
+  display: none;
+}
+
+.answer.sort ol li::after {
+  display: none;
+}
