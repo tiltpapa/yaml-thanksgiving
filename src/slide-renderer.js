@@ -106,6 +106,42 @@ export function renderAnswerSlide(question) {
 }
 
 /**
+ * 解説スライドを生成（ハイライトなし、回答数非表示）
+ * answer.caption: { 1: "...", 2: "..." } に対応
+ * キャプションテキスト内の *テキスト* を太字赤で表示
+ */
+export function renderCaptionSlide(question) {
+    // 問題スライドをベースに生成（ハイライトなし）
+    const container = renderQuestionSlide(question);
+    container.className = container.className.replace('quiz', 'answer');
+    container.classList.add('caption-slide');
+
+    const answer = question.answer || {};
+    const captions = answer.caption || {};
+    const selections = question.selections || {};
+
+    const items = container.querySelectorAll('ol li');
+    const keys = Object.keys(selections);
+
+    items.forEach((li, index) => {
+        const key = keys[index];
+        const captionText = captions[key];
+        if (!captionText) return;
+
+        const captionEl = document.createElement('span');
+        captionEl.className = 'answer-caption';
+        // *テキスト* を <strong class="highlight"> に変換
+        captionEl.innerHTML = String(captionText).replace(
+            /\*([^*]+)\*/g,
+            '<strong class="caption-highlight">$1</strong>'
+        );
+        li.appendChild(captionEl);
+    });
+
+    return container;
+}
+
+/**
  * 前フリスライドを生成
  * lead-in: { text: string|string[], image: string } に対応
  */

@@ -87,8 +87,61 @@ h1::before, li::before, li::after {
 }
 
 /* ===============================
-   前フリスライド
+   解説スライド (.caption-slide)
+   回答数バッジを非表示、キャプションを表示
 ================================ */
+
+/* 回答数バッジ（::after）とタイマーを非表示 */
+.caption-slide ol li::after {
+  display: none;
+}
+
+.caption-slide .countdown-timer {
+  display: none;
+}
+
+/* 各選択肢に付くキャプションテキスト（テキスト問題用） */
+.text-quiz .answer-caption {
+  display: block;
+  font-size: 0.55em;
+  color: #cce8ff;
+  margin-top: 4px;
+  line-height: 1.4;
+  font-weight: normal;
+}
+
+/* 画像問題用: 下部オーバーレイとして表示 */
+.image-quiz .answer-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.65);
+  color: #cce8ff;
+  font-size: 0.45em;
+  line-height: 1.3;
+  font-weight: normal;
+  padding: 4px 8px;
+  border-radius: 0 0 12px 12px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* .caption（画像キャプションバッジ）がある場合は少し上に */
+.image-quiz ol li:has(.caption) .answer-caption {
+  bottom: 36px;
+  border-radius: 0;
+}
+
+/* *テキスト* → 太字赤ハイライト */
+.caption-highlight {
+  color: #ff4444;
+  font-weight: 700;
+}
+
+
 .lead-in-slide {
   display: flex;
   flex-direction: column;

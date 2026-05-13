@@ -1,5 +1,5 @@
 import { loadQuizYaml } from './yaml-loader.js';
-import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide } from './slide-renderer.js';
+import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide, renderCaptionSlide } from './slide-renderer.js';
 import { SlideController } from './slide-controller.js';
 
 async function init() {
@@ -58,6 +58,15 @@ async function init() {
                         type: 'answer',
                         data: question,
                         element: renderAnswerSlide(question)
+                    });
+                }
+
+                // 解説スライド（caption がある場合のみ）
+                if (question.answer?.caption) {
+                    verticalStack.push({
+                        type: 'caption',
+                        data: question,
+                        element: renderCaptionSlide(question)
                     });
                 }
             }
