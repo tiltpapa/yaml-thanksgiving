@@ -36,30 +36,7 @@ export function renderQuestionSlide(question) {
 
     for (const value of Object.values(selections)) {
         const li = document.createElement('li');
-        
-        if (Array.isArray(value)) {
-            // [画像パス, キャプション] 形式
-            const img = document.createElement('img');
-            img.src = value[0];
-            img.alt = value[1] || '';
-            li.appendChild(img);
-            if (value[1]) {
-                const caption = document.createElement('span');
-                caption.className = 'caption';
-                caption.textContent = value[1];
-                li.appendChild(caption);
-            }
-        } else if (typeof value === 'string' && isImagePath(value)) {
-            // 画像パスのみ
-            const img = document.createElement('img');
-            img.src = value;
-            img.alt = '';
-            li.appendChild(img);
-        } else {
-            // テキスト
-            li.textContent = value;
-        }
-        
+        _appendSelectionContent(li, value);
         ol.appendChild(li);
     }
     container.appendChild(ol);
@@ -174,6 +151,193 @@ export function renderLeadInSlide(question) {
     }
 
     return container;
+}
+
+/**
+ * 並び替えクイズ：問題スライドを生成
+ * 選択肢バッジは A B C D ... 表示
+ */
+export function renderSortQuestionSlide(question) {
+    const container = document.createElement('div');
+    const layout = question.layout || {};
+    const selections = question.selections || {};
+
+    const hasImages = Object.values(selections).some(v =>
+        isImagePath(v) || (Array.isArray(v) && isImagePath(v[0]))
+    );
+    const count = Object.keys(selections).length;
+    const takuClass = count <= 2 ? 'taku-2' : count <= 4 ? 'taku-4' : 'taku-6';
+    const typeClass = hasImages ? 'image-quiz' : 'text-quiz';
+
+    // sort クラスを付与（バッジを A B C D にするため）
+    container.className = `quiz sort ${typeClass} ${takuClass}`;
+
+    // タイトル（問題文）
+    const title = document.createElement('h1');
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = layout['mini-title'] || question.title || '';
+    title.appendChild(titleSpan);
+    container.appendChild(title);
+
+    // 選択肢リスト（元の順番で表示）
+    const ol = document.createElement('ol');
+    for (const value of Object.values(selections)) {
+        const li = document.createElement('li');
+        _appendSelectionContent(li, value);
+        ol.appendChild(li);
+    }
+    container.appendChild(ol);
+
+    // タイマー
+    const timeLimit = question.time_limit ?? 10;
+    const timer = document.createElement('div');
+    timer.className = 'countdown-timer';
+    timer.dataset.limit = timeLimit;
+    timer.textContent = timeLimit;
+    container.appendChild(timer);
+
+    return container;
+}
+
+/**
+ * 並び替えクイズ：正解発表スライドを複数枚生成して返す
+ * - 正解順に選択肢を並べ替えて表示
+ * - 最後の2つは同時開示、それ以外は1枚ずつ
+ * - 選択肢が画像の場合：バッジ横に小さい画像＋キャプション（横並び）
+ * @returns {Array<HTMLElement>} スライド要素の配列
+ */
+export function renderSortAnswerSlides(question) {
+    const layout = question.layout || {};
+    const selections = question.selections || {};
+    const answer = question.answer || {};
+    const correctOrder = answer.answer || []; // 正解の順番（選択肢キー）
+    const captions = answer.caption || {};
+
+    const selectionKeys = Object.keys(selections);
+    const hasImages = Object.values(selections).some(v =>
+        isImagePath(v) || (Array.isArray(v) && isImagePath(v[0]))
+    );
+    const count = correctOrder.length;
+    const takuClass = count <= 2 ? 'taku-2' : count <= 4 ? 'taku-4' : 'taku-6';
+    const typeClass = hasImages ? 'image-quiz' : 'text-quiz';
+
+    // 正解順に並べた選択肢データを構築
+    // { key, value, caption } の配列
+    const orderedItems = correctOrder.map(key => {
+        const strKey = String(key);
+        return {
+            key: strKey,
+            value: selections[strKey],
+            caption: captions[strKey] || null,
+        };
+    });
+
+    // 開示ステップを決定
+    // 最後の2つは同時開示、それ以外は1枚ずつ
+    // 例: 4択 → [1枚目:1個, 2枚目:2個, 3枚目:4個]
+    const steps = [];
+    if (count <= 2) {
+        steps.push(count); // 全部一気に
+    } else {
+        for (let i = 1; i <= count - 2; i++) {
+            steps.push(i);
+        }
+        steps.push(count); // 最後の2つを一気に
+    }
+
+    return steps.map(revealCount => {
+        const container = document.createElement('div');
+        container.className = `answer sort ${typeClass} ${takuClass}`;
+
+        // タイトル
+        const title = document.createElement('h1');
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = layout['mini-title'] || question.title || '';
+        title.appendChild(titleSpan);
+        container.appendChild(title);
+
+        // 選択肢リスト（正解順）
+        const ol = document.createElement('ol');
+        orderedItems.forEach((item, index) => {
+            const li = document.createElement('li');
+            const revealed = index < revealCount;
+
+            // 元の選択肢キーから何番目かを求めてバッジ文字・色クラスを決定
+            // selectionKeys は ['1','2','3','4'] など
+            const originalIndex = selectionKeys.indexOf(item.key); // 0始まり
+            const badgeLabel = String.fromCharCode(65 + originalIndex); // A,B,C,D...
+            li.dataset.badge = badgeLabel;
+            li.classList.add(`badge-${originalIndex + 1}`); // badge-1, badge-2...
+
+            if (!revealed) {
+                // 未開示：完全非表示
+                li.classList.add('sort-hidden');
+            } else if (hasImages) {
+                // 画像問題：バッジ横に小さい画像＋キャプション（横並び）
+                li.classList.add('sort-image-row');
+                const img = document.createElement('img');
+                const imgSrc = Array.isArray(item.value) ? item.value[0] : item.value;
+                img.src = imgSrc;
+                img.alt = item.caption || '';
+                img.className = 'sort-thumb';
+                li.appendChild(img);
+
+                if (item.caption) {
+                    const cap = document.createElement('span');
+                    cap.className = 'sort-caption';
+                    cap.innerHTML = String(item.caption).replace(
+                        /\*([^*]+)\*/g,
+                        '<strong class="caption-highlight">$1</strong>'
+                    );
+                    li.appendChild(cap);
+                }
+            } else {
+                // テキスト問題
+                const textValue = Array.isArray(item.value) ? item.value[1] || item.value[0] : item.value;
+                li.textContent = textValue;
+
+                if (item.caption) {
+                    const cap = document.createElement('span');
+                    cap.className = 'answer-caption';
+                    cap.innerHTML = String(item.caption).replace(
+                        /\*([^*]+)\*/g,
+                        '<strong class="caption-highlight">$1</strong>'
+                    );
+                    li.appendChild(cap);
+                }
+            }
+
+            ol.appendChild(li);
+        });
+        container.appendChild(ol);
+
+        return container;
+    });
+}
+
+/**
+ * 選択肢の内容をliに追加（共通ヘルパー）
+ */
+function _appendSelectionContent(li, value) {
+    if (Array.isArray(value)) {
+        const img = document.createElement('img');
+        img.src = value[0];
+        img.alt = value[1] || '';
+        li.appendChild(img);
+        if (value[1]) {
+            const caption = document.createElement('span');
+            caption.className = 'caption';
+            caption.textContent = value[1];
+            li.appendChild(caption);
+        }
+    } else if (typeof value === 'string' && isImagePath(value)) {
+        const img = document.createElement('img');
+        img.src = value;
+        img.alt = '';
+        li.appendChild(img);
+    } else {
+        li.textContent = value;
+    }
 }
 
 /**

@@ -1,5 +1,5 @@
 import { loadQuizYaml } from './yaml-loader.js';
-import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide, renderCaptionSlide } from './slide-renderer.js';
+import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide, renderCaptionSlide, renderSortQuestionSlide, renderSortAnswerSlides } from './slide-renderer.js';
 import { SlideController } from './slide-controller.js';
 
 async function init() {
@@ -37,37 +37,61 @@ async function init() {
             
             // 問題スライド
             if (question.selections) {
-                verticalStack.push({
-                    type: 'question',
-                    data: question,
-                    element: renderQuestionSlide(question)
-                });
+                const isSort = question.layout?.type === 'sort';
 
-                // 回答数表示スライド（縦方向に配置）
-                if (question.answer) {
+                if (isSort) {
+                    // 並び替えクイズ
                     verticalStack.push({
-                        type: 'result',
+                        type: 'question',
                         data: question,
-                        element: renderResultSlide(question)
+                        element: renderSortQuestionSlide(question)
                     });
-                }
 
-                // 回答スライド（正解表示、縦方向に配置）
-                if (question.answer) {
+                    // 正解発表スライド（複数枚、回答数スライドはスキップ）
+                    if (question.answer) {
+                        const answerSlides = renderSortAnswerSlides(question);
+                        for (const el of answerSlides) {
+                            verticalStack.push({
+                                type: 'sort-answer',
+                                data: question,
+                                element: el
+                            });
+                        }
+                    }
+                } else {
+                    // 通常の選択クイズ
                     verticalStack.push({
-                        type: 'answer',
+                        type: 'question',
                         data: question,
-                        element: renderAnswerSlide(question)
+                        element: renderQuestionSlide(question)
                     });
-                }
 
-                // 解説スライド（caption がある場合のみ）
-                if (question.answer?.caption) {
-                    verticalStack.push({
-                        type: 'caption',
-                        data: question,
-                        element: renderCaptionSlide(question)
-                    });
+                    // 回答数表示スライド（縦方向に配置）
+                    if (question.answer) {
+                        verticalStack.push({
+                            type: 'result',
+                            data: question,
+                            element: renderResultSlide(question)
+                        });
+                    }
+
+                    // 回答スライド（正解表示、縦方向に配置）
+                    if (question.answer) {
+                        verticalStack.push({
+                            type: 'answer',
+                            data: question,
+                            element: renderAnswerSlide(question)
+                        });
+                    }
+
+                    // 解説スライド（caption がある場合のみ）
+                    if (question.answer?.caption) {
+                        verticalStack.push({
+                            type: 'caption',
+                            data: question,
+                            element: renderCaptionSlide(question)
+                        });
+                    }
                 }
             }
             
