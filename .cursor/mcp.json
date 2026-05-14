@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "autoApprove": [
+        "navigate_page",
+        "take_screenshot",
+        "press_key",
+        "new_page",
+        "take_snapshot",
+        "list_pages",
+        "list_console_messages",
+        "get_console_message",
+        "list_network_requests"
+      ]
+    },
+    "reveal-thanksgiving": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://gitmcp.io/tiltpapa/reveal-thanksgiving"
+      ]
+    }
+  }
+}
