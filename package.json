@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npx http-server -p 3000 -c-1",
     "proxy": "node proxy.js",
-    "dev": "node proxy.js & npx http-server -p 3000 -c-1"
+    "dev": "node proxy.js & npx http-server -p 3000 -c-1",
+    "dev-win": "start /b node proxy.js & start /b npx http-server -p 3000 -c-1"
   },
   "devDependencies": {
     "http-server": "^14.1.1"
