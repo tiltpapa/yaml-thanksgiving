@@ -1,10 +1,22 @@
 import { loadQuizYaml } from './yaml-loader.js';
 import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleSlide, renderLeadInSlide, renderCaptionSlide } from './slide-renderer.js';
 import { SlideController } from './slide-controller.js';
+import { QuaggaApiClient } from './quagga-api.js';
+import { injectAnswerCounts } from './result-renderer.js';
 
 async function init() {
     const container = document.getElementById('current-slide');
     const controller = new SlideController(container);
+
+    // config.js が存在しない場合はQuagga連携を無効化
+    let quaggaApi = null;
+    try {
+        const { config } = await import('../config.js');
+        quaggaApi = new QuaggaApiClient(config);
+        console.log(`[Quagga] 連携有効 (debugMode: ${config.debugMode})`);
+    } catch {
+        console.info('[Quagga] config.js が見つかりません。Quagga連携は無効です。');
+    }
 
     try {
         const quizData = await loadQuizYaml('quiz.yml');
@@ -76,14 +88,37 @@ async function init() {
             }
         }
 
-        controller.setSlides(slides);
-        
-        // デバッグ用
-        controller.onSlideChange = (h, v, slide) => {
+        // setSlides より先に登録（初期表示でも呼ばれるようにする）
+        // result スライドで取得したカウントをキャッシュ（問題インデックスをキーに保持）
+        const countCache = new Map(); // key: h, value: counts
+
+        controller.onSlideChange = async (h, v, slide) => {
             const totalH = slides.length;
             const totalV = slides[h]?.length || 0;
             console.log(`Slide [${h}/${v}] (${h+1}/${totalH}, ${v+1}/${totalV}): ${slide.type}`);
+
+            if (!quaggaApi) return;
+
+            if (slide.type === 'result') {
+                // 回答数を取得してキャッシュ＆注入
+                try {
+                    const counts = await quaggaApi.getAnswerCounts();
+                    countCache.set(h, counts);
+                    injectAnswerCounts(slide.element, counts);
+                } catch (err) {
+                    console.warn('[Quagga] 回答数取得失敗:', err.message);
+                }
+            } else if (slide.type === 'answer' || slide.type === 'caption') {
+                // キャッシュがあれば再リクエストせず注入
+                const counts = countCache.get(h);
+                console.log(`[Quagga] cache for h=${h}:`, counts);
+                if (counts) {
+                    injectAnswerCounts(slide.element, counts);
+                }
+            }
         };
+
+        controller.setSlides(slides);
 
     } catch (error) {
         console.error('Failed to initialize:', error);
