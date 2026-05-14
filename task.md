@@ -21,6 +21,7 @@
 - [x] ランキング表示ページ（ranking.html）リライト（Reveal.js依存除去）
   - キー操作: 1=問題 / 2=ピリオド / 3=総合 / R=再取得 / ←→=ページ切替
 - [ ] config.js の整備（config.example.js をコピーして設定）
+- [x] ローカルプロキシサーバー実装（proxy.js）- CORS 回避用
 
 ## 整備
 - [x] CSS styleの整理

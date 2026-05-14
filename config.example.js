@@ -14,6 +14,10 @@ export const config = {
   debugMode: true,
   
   // 本番APIベースURL
+  // ブラウザから直接アクセスすると CORS でブロックされるため、
+  // ローカルプロキシ経由にする場合は下記のように変更する:
+  //   apiBase: 'http://localhost:3001/api/v1'
+  // プロキシ起動: npm run proxy
   apiBase: 'https://quagga.studio/api/v1',
 
   // モックサーバーURL（debugMode: true のときに使用）
