@@ -1,314 +1,314 @@
 # カスタマイズガイド
 
-このドキュメントでは、クイズスライドのカスタマイズ方法について説明します。
+`quiz.yml` を編集してクイズを作成する方法を説明する。
 
 ## 目次
 
-- [Reveal.jsについて](#revealjsについて)
-- [quiz.mdの編集方法](#quizmdの編集方法)
-- [使用可能なクラス一覧](#使用可能なクラス一覧)
-- [スタイルのカスタマイズ](#スタイルのカスタマイズ)
-- [複数のスライドファイルを使い分ける](#複数のスライドファイルを使い分ける)
-- [動画を使用する場合](#動画を使用する場合)
+- [YAMLの基本構造](#yamlの基本構造)
+- [問題の書き方](#問題の書き方)
+- [スライドの種類と自動生成](#スライドの種類と自動生成)
+- [レイアウトの種類](#レイアウトの種類)
+- [選択肢の書き方](#選択肢の書き方)
+- [正解・解説の設定](#正解解説の設定)
+- [前フリスライド](#前フリスライド)
+- [タイトルスライド](#タイトルスライド)
+- [複数のクイズファイルを使い分ける](#複数のクイズファイルを使い分ける)
 
 ---
 
-## Reveal.jsについて
+## YAMLの基本構造
 
-### スライドの方向
+`quiz.yml` は `questions` キーの下に問題を並べる：
 
-Reveal.jsでは、スライドを2方向に配置できます：
-
-- **横方向（Horizontal）**: 基本的なスライドの進行方向。左右の矢印キーまたはスペースキーで移動します。
-- **縦方向（Vertical）**: 各トピック内の詳細スライド。上下の矢印キーで移動します。
-
+```yaml
+questions:
+  - title: "問題タイトル"
+    layout:
+      type: "select"
+      mini-title: "問題文"
+    selections:
+      1: "選択肢1"
+      2: "選択肢2"
+    answer:
+      answer: [1]
 ```
-横方向 →
-[ 1   ] → [ 2   ]
-   ↓        ↓
-[ 1-1 ]   [ 2-1 ]  縦方向
-
-```
-
-### 区切り文字
-
-- `---` : 横方向の区切り（新しいトピック）
-- `>>>` : 縦方向の区切り（同じトピック内の詳細）
 
 ---
 
-## quiz.mdの編集方法
+## 問題の書き方
 
-### 基本的な構成
+各問題で使えるキー：
 
-一問のクイズは、通常3つのスライドで構成されます：
-
-1. **問題スライド** - タイマー付きでクイズを表示
-2. **回答数表示スライド** - Quagga APIから取得した回答数を表示
-3. **正解発表スライド** - 正解の選択肢が赤く光って表示
-
-### 推奨される構成と表記法
-
-#### 1. 問題スライド
-
-```markdown
->>>
-<!-- .slide: data-state="with-timer" data-limit="10" -->
-<!-- .slide: class="quiz text-4taku" -->
-# 問題文
-
-1. 選択肢1
-2. 選択肢2
-3. 選択肢3
-4. 選択肢4
-```
-
-**設定項目：**
-- `data-state="with-timer"` : カウントダウンタイマーを表示
-- `data-limit="10"` : 制限時間（秒）。省略時は10秒
-- `class="quiz text-4taku"` : クイズスライドで4択テキスト形式
-
-#### 2. 回答数表示スライド
-
-```markdown
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku" -->
-```
-
-**設定項目：**
-- `data-state="copy-prev"` : 前のスライドの内容をコピー
-- `class="answer text-4taku"` : 回答表示スライドで4択テキスト形式
-
-このスライドで **Qキー** を押すと、Quagga APIから回答数を取得して表示します。
-
-#### 3. 正解発表スライド
-
-```markdown
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku maru-3" -->
-```
-
-**設定項目：**
-- `maru-3` : 3番目の選択肢の背景が赤く光る
-- 複数正解の場合は `maru-1 maru-2 maru-3` のように複数指定可能
+| キー | 必須 | 説明 |
+|------|------|------|
+| `title` | ○ | 問題タイトル（扉スライドに表示） |
+| `subtitle` | - | サブタイトル（扉スライドに表示） |
+| `lead-in` | - | 前フリスライドの内容 |
+| `layout` | ○ | レイアウト設定 |
+| `selections` | ○ | 選択肢 |
+| `answer` | - | 正解・解説設定 |
+| `time_limit` | - | タイマーの秒数（省略時は10秒） |
 
 ---
 
-## 使用可能なクラス一覧
+## スライドの種類と自動生成
 
-### クイズ形式
+1問につき以下のスライドが自動生成される：
 
-#### テキストクイズ
-- `text-2taku` : 2択
-- `text-4taku` : 4択
-- `text-6taku` : 6択
-
-#### 画像クイズ
-- `image-2taku` : 2択
-- `image-4taku` : 4択
-- `image-6taku` : 6択
-
-### スライドタイプ
-
-- `quiz` : 問題スライド
-- `answer` : 回答・正解発表スライド
-
-### 正解マーク
-
-- `maru-1` : 1番目の選択肢に正解マーク
-- `maru-2` : 2番目の選択肢に正解マーク
-- `maru-3` : 3番目の選択肢に正解マーク
-- `maru-4` : 4番目の選択肢に正解マーク
-- `maru-5` : 5番目の選択肢に正解マーク
-- `maru-6` : 6番目の選択肢に正解マーク
-- `maru-this` : リスト項目に直接指定（`<!-- .element: class="maru-this" -->`）
-
-### データ属性
-
-- `data-state="with-timer"` : カウントダウンタイマーを表示
-- `data-state="copy-prev"` : 前のスライドの内容をコピー
-- `data-limit="秒数"` : タイマーの制限時間を設定
+1. **タイトルスライド** - `title` が設定されている場合
+2. **前フリスライド** - `lead-in` が設定されている場合
+3. **問題スライド** - `selections` が設定されている場合（タイマー付き）
+4. **回答数スライド** - `answer` が設定されている場合（Quagga連携で回答数を表示）
+5. **正解スライド** - `answer` が設定されている場合（正解をハイライト表示）
+6. **解説スライド** - `answer.caption` が設定されている場合
 
 ---
 
-## クイズの作成例
+## レイアウトの種類
+
+`layout` セクションで設定する：
+
+```yaml
+layout:
+  type: "select"        # 問題タイプ（現在は select のみ）
+  mini-title: "問題文"  # 問題スライドに表示する問題文
+  large-image: "images/sample.jpg"  # 大きな画像（省略可）
+```
+
+### 選択肢数による自動判定
+
+選択肢の数に応じてレイアウトが自動で切り替わる：
+
+| 選択肢数 | レイアウト |
+|---------|-----------|
+| 2 | 2択 |
+| 3〜4 | 4択 |
+| 5〜6 | 6択 |
+
+### テキスト vs 画像
+
+選択肢の値が画像ファイルパス（`.png`, `.jpg` など）かどうかで自動判定される。
+
+### 大画像レイアウト
+
+`large-image` を指定すると、大きな画像の下にテキスト選択肢が並ぶレイアウトになる：
+
+```yaml
+layout:
+  type: "select"
+  mini-title: "この花は？"
+  large-image: "images/himawari.jpg"
+selections:
+  1: "ひまわり"
+  2: "バラ"
+  3: "チューリップ"
+  4: "コスモス"
+```
+
+---
+
+## 選択肢の書き方
+
+### テキスト選択肢
+
+```yaml
+selections:
+  1: "野球"
+  2: "サッカー"
+  3: "テニス"
+  4: "水泳"
+```
+
+### 画像選択肢
+
+```yaml
+selections:
+  1: "images/baseball.png"
+  2: "images/soccer.png"
+```
+
+### 画像＋キャプション選択肢
+
+```yaml
+selections:
+  1: ["images/baseball.png", "野球"]
+  2: ["images/soccer.png", "サッカー"]
+```
+
+---
+
+## 正解・解説の設定
+
+### 正解のみ
+
+```yaml
+answer:
+  answer: [1]
+```
+
+複数正解の場合：
+
+```yaml
+answer:
+  answer: [1, 3]
+```
+
+### 解説付き
+
+`caption` に選択肢キーと解説テキストを対応させる。`*テキスト*` で赤太字になる：
+
+```yaml
+answer:
+  answer: [1]
+  caption:
+    1: "*ひまわり*はキク科の一年草"
+    2: "バラはバラ科の植物"
+    3: "チューリップはユリ科の球根植物"
+    4: "コスモスはキク科の一年草"
+```
+
+---
+
+## 前フリスライド
+
+問題スライドの前に表示するスライド。テキストと画像を組み合わせられる：
+
+```yaml
+lead-in:
+  text: "ひまわり"
+  image: "images/himawari.jpg"
+```
+
+テキストを複数行にする場合：
+
+```yaml
+lead-in:
+  text:
+    - "これは何でしょう？"
+    - "ヒント: 夏の花"
+  image: "images/himawari-land.jpg"
+```
+
+---
+
+## タイトルスライド
+
+`title` と `subtitle` を設定すると扉スライドが生成される：
+
+```yaml
+- title: "どれが好き？"
+  subtitle: "第1問"
+  layout:
+    type: "select"
+    mini-title: "どれが好き？"
+  selections:
+    1: "野球"
+    2: "サッカー"
+```
+
+タイトルスライドのみ（問題なし）を作る場合は `layout.type: "title"` を指定する：
+
+```yaml
+- title: "クイズ大会"
+  subtitle: "2024年版"
+  layout:
+    type: "title"
+```
+
+---
+
+## 作成例
 
 ### テキスト4択クイズ
 
-```markdown
-# 問題タイトル
->>>
-<!-- .slide: data-state="with-timer" data-limit="10" -->
-<!-- .slide: class="quiz text-4taku" -->
-# 日本の首都はどこ？
-
-1. 東京
-2. 大阪
-3. 京都
-4. 名古屋
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku" -->
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku maru-1" -->
+```yaml
+- title: "日本の首都は？"
+  time_limit: 10
+  layout:
+    type: "select"
+    mini-title: "日本の首都はどこ？"
+  selections:
+    1: "東京"
+    2: "大阪"
+    3: "京都"
+    4: "名古屋"
+  answer:
+    answer: [1]
 ```
 
-### 画像2択クイズ
+### 画像2択クイズ（解説付き）
 
-```markdown
-# 画像問題
->>>
-<!-- .slide: data-state="with-timer" data-limit="5" -->
-<!-- .slide: class="quiz image-2taku" -->
-# どちらが好き？
-
-1. ![野球](images/baseball.png)
-2. ![サッカー](images/soccer.png)
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer image-2taku" -->
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer image-2taku maru-1" -->
+```yaml
+- title: "どちらが野球？"
+  layout:
+    type: "select"
+    mini-title: "野球のボールはどっち？"
+  selections:
+    1: ["images/baseball.png", "野球"]
+    2: ["images/soccer.png", "サッカー"]
+  answer:
+    answer: [1]
+    caption:
+      1: "*野球*のボールが正解！"
+      2: "これはサッカーボール"
 ```
 
-### 複数正解の例
+### 前フリ付き4択クイズ
 
-```markdown
->>>
-<!-- .slide: data-state="with-timer" -->
-<!-- .slide: class="quiz text-4taku" -->
-# 果物はどれ？（複数選択可）
-
-1. バナナ
-2. りんご
-3. ポップコーン
-4. オレンジ
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku" -->
-
->>>
-<!-- .slide: data-state="copy-prev" -->
-<!-- .slide: class="answer text-4taku maru-1 maru-2 maru-4" -->
+```yaml
+- title: "この花は？"
+  lead-in:
+    text: "夏によく見かける花です"
+    image: "images/himawari.jpg"
+  layout:
+    type: "select"
+    mini-title: "この花の名前は？"
+  selections:
+    1: "ひまわり"
+    2: "バラ"
+    3: "チューリップ"
+    4: "コスモス"
+  answer:
+    answer: [1]
 ```
 
 ---
 
-## スタイルのカスタマイズ
+## 複数のクイズファイルを使い分ける
 
-### styles.cssの編集
+異なるクイズセットを作りたい場合、HTMLファイルとYAMLファイルをセットで用意する。
 
-外観をカスタマイズする場合は、`styles.css`を編集します。
+1. `index.html` をコピー（例: `period2.html`）
+2. 新しいYAMLファイルを作成（例: `quiz2.yml`）
+3. コピーしたHTMLの読み込み先を変更：
 
----
+```html
+<!-- period2.html 内の app.js 呼び出し前に設定を追加 -->
+<script>
+  window.QUIZ_FILE = 'quiz2.yml';
+</script>
+<script type="module" src="src/app.js"></script>
+```
 
-## 複数のスライドファイルを使い分ける
-
-異なるクイズセットを作成したい場合、スライドファイルを分けることができます。
-
-### 手順
-
-1. **index.htmlをコピー**
-   
-   例：`period2.html`という名前でコピー
-   ```bash
-   cp index.html period2.html
-   ```
-
-2. **新しいmdファイルを作成**
-   
-   例：`quiz2.md`を作成してクイズ内容を記述
-
-3. **コピーしたHTMLファイルを編集**
-   
-   `period2.html`を開いて、以下の部分を変更：
-   
-   ```html
-   <!-- 変更前 -->
-   <section data-markdown="quiz.md"
-            data-separator="^\r?\n---\r?\n"
-            data-separator-vertical="^\r?\n>>>\r?\n"
-   >
-   </section>
-   
-   <!-- 変更後 -->
-   <section data-markdown="quiz2.md"
-            data-separator="^\r?\n---\r?\n"
-            data-separator-vertical="^\r?\n>>>\r?\n"
-   >
-   </section>
-   ```
-
-4. **アクセス**
-   
-   サーバー起動後、`http://localhost:3000/period2.html`にアクセス
-
----
-
-## 動画を使用する場合
-
-クイズスライドで動画を使用する場合、回答スライドでは事前に用意した動画の最終フレーム画像を表示します。
-
-### 事前準備
-
-1. **ffmpegのインストール**（初回のみ）
-
-   macOS:
-   ```bash
-   brew install ffmpeg
-   ```
-   
-   Windows: https://ffmpeg.org/download.html からダウンロード
-
-2. **動画の最終フレーム画像を生成**
-
-   ```bash
-   node extract-last-frame.js images/sample.mp4 images/sample2.mp4
-   ```
-
-   または、imagesフォルダ内の全mp4ファイルを一括処理：
-   ```bash
-   node extract-last-frame.js images/*.mp4
-   ```
-
-   これにより、各動画ファイルと同じディレクトリに同名の`.png`ファイルが生成されます。
-   例: `images/sample.mp4` → `images/sample.png`
-
-3. **スライドで動画を使用**
-
-   `quiz.md`で通常通り動画を指定すれば、回答スライドでは自動的に対応する画像が使用されます：
-
-   ```markdown
-   1. <video src="images/sample.mp4"></video>
-   2. <video src="images/sample2.mp4"></video>
-   ```
-
----
-
-## 制限事項
-
-- **ブラウザ対応**: Chrome での動作確認を行なっています。他のブラウザでは表示が崩れる可能性があります。
+※ 現状は `app.js` が `quiz.yml` を固定で読み込んでいるため、複数ファイル対応には `app.js` の修正が必要。
 
 ---
 
 ## トラブルシューティング
 
-### スライドが正しく表示されない
+### スライドが表示されない
 
-1. `quiz.md`の構文を確認してください
-2. クラス名のスペルミスがないか確認してください
-3. リロードしてください
+1. `quiz.yml` の構文を確認（インデントのズレに注意）
+2. ブラウザの開発者ツールでエラーを確認
+3. リロードする
 
 ### 回答数が表示されない
 
-1. `config.js`の設定を確認してください
-2. ブラウザの開発者ツールでエラーを確認してください
+1. `config.js` の設定を確認
+2. `debugMode: true` で動作確認する
+3. プロキシサーバーが必要な場合は `npm run proxy` を実行
+
+### 画像が表示されない
+
+1. `images/` フォルダに画像ファイルが存在するか確認
+2. YAMLのパスが正しいか確認（例: `images/baseball.png`）
