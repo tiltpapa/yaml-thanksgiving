@@ -286,3 +286,46 @@ questions:
         1: "野球は2位"
         4: "水泳は3位"
         2: "サッカーは4位"
+
+  # ===============================
+  # ボーナスクイズ（チャンピオン答え合わせ）
+  # layout.type: bonus / API: champion + last_aggregate
+  # ===============================
+  - title: "ボーナスクイズ"
+    time_limit: 15
+    layout:
+      type: "bonus"
+      mini-title: "高い順に並べて"
+    selections:
+      1: "台北101"
+      2: "東京スカイツリー"
+      3: "東京タワー"
+      4: "あべのハルカス"
+    answer:
+      answer: [2, 1, 3, 4]
+      caption:
+        2: "634m・世界一だった"
+        1: "509.2m"
+        3: "333m"
+        4: "300m"
+
+  # ===============================
+  # ボーナスクイズ: 画像4択
+  # ===============================
+  - title: "ボーナスクイズ（画像）"
+    time_limit: 15
+    layout:
+      type: "bonus"
+      mini-title: "好きな順に並べよう！"
+    selections:
+      1: ["images/baseball.png", "野球"]
+      2: ["images/soccer.png", "サッカー"]
+      3: ["images/tennis.png", "テニス"]
+      4: ["images/swimming.png", "水泳"]
+    answer:
+      answer: [3, 1, 4, 2]
+      caption:
+        3: "*テニス*が1位！"
+        1: "野球は2位"
+        4: "水泳は3位"
+        2: "サッカーは4位"

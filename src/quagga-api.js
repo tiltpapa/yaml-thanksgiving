@@ -28,6 +28,7 @@ const MOCK = {
       { id: 3, answer: '1', correct: true,  point: 3, time: '4.55', member: { id: 3, admin: false, user: { id: 3, name: 'Charlie', name_gana: 'ちゃーりー' } } },
       { id: 4, answer: '3', correct: false, point: 0, time: '6.00', member: { id: 4, admin: false, user: { id: 4, name: 'Diana',   name_gana: 'だいあな'  } } },
       { id: 5, answer: '1', correct: true,  point: 3, time: '2.88', member: { id: 5, admin: false, user: { id: 5, name: 'Eve',     name_gana: 'いぶ'     } } },
+      { id: 6, answer: '1,2,3,4', correct: false, point: 0, time: '4.10', member: { id: 5, admin: false, user: { id: 5, name: 'Eve', name_gana: 'いぶ' } } },
     ],
   },
   periodResult: {
@@ -47,6 +48,13 @@ const MOCK = {
       { rank: 4, point: 6,  time: '30.00', money: '0.0', member: { id: 2, admin: false, user: { id: 2, name: 'Bob',     name_gana: 'ぼぶ'     } } },
       { rank: 5, point: 3,  time: '25.50', money: '0.0', member: { id: 4, admin: false, user: { id: 4, name: 'Diana',   name_gana: 'だいあな'  } } },
     ],
+  },
+  champion: {
+    champion: {
+      id: 5,
+      admin: false,
+      user: { id: 5, name: 'Eve', name_gana: 'いぶ' },
+    },
   },
 };
 
@@ -91,9 +99,10 @@ export class QuaggaApiClient {
 
   /** サンプルデータ（モックサーバー接続失敗時のフォールバック） */
   _fallbackResponse(path) {
-    if (path.includes('last_aggregate')) return Promise.resolve(MOCK.lastAggregate);
-    if (path.includes('result/period'))  return Promise.resolve(MOCK.periodResult);
-    if (path.includes('result/total'))   return Promise.resolve(MOCK.totalResult);
+    if (path.includes('/champion'))       return Promise.resolve(MOCK.champion);
+    if (path.includes('last_aggregate'))  return Promise.resolve(MOCK.lastAggregate);
+    if (path.includes('result/period'))   return Promise.resolve(MOCK.periodResult);
+    if (path.includes('result/total'))    return Promise.resolve(MOCK.totalResult);
     return Promise.reject(new Error(`No fallback for: ${path}`));
   }
 

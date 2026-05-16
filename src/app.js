@@ -3,6 +3,7 @@ import { renderQuestionSlide, renderResultSlide, renderAnswerSlide, renderTitleS
 import { SlideController } from './slide-controller.js';
 import { QuaggaApiClient } from './quagga-api.js';
 import { injectAnswerCounts } from './result-renderer.js';
+import { buildBonusSlideStack, fetchBonusData, replaceBonusSlides } from './bonus-quiz.js';
 
 async function init() {
     const container = document.getElementById('current-slide');
@@ -49,9 +50,22 @@ async function init() {
             
             // 問題スライド
             if (question.selections) {
-                const isSort = question.layout?.type === 'sort';
+                const layoutType = question.layout?.type;
+                const isBonus = layoutType === 'bonus';
+                const isSort = layoutType === 'sort';
 
-                if (isSort) {
+                if (isBonus) {
+                    const qEl = renderSortQuestionSlide(question);
+                    qEl.classList.add('bonus');
+                    verticalStack.push({
+                        type: 'question',
+                        data: question,
+                        element: qEl,
+                    });
+
+                    const bonusSlides = await buildBonusSlideStack(question, quaggaApi);
+                    verticalStack.push(...bonusSlides);
+                } else if (isSort) {
                     // 並び替えクイズ
                     verticalStack.push({
                         type: 'question',
@@ -143,6 +157,31 @@ async function init() {
         };
 
         controller.setSlides(slides);
+
+        if (quaggaApi) {
+            document.addEventListener('keydown', async (e) => {
+                if (e.key !== 'c' && e.key !== 'C') return;
+                const group = slides[controller.indexH];
+                if (!group?.some(s => s.type.startsWith('bonus-'))) return;
+
+                const ref = group.find(s => s.type === 'bonus-champion' || s.type === 'bonus-error');
+                if (!ref) return;
+
+                try {
+                    const { championAnswer } = await fetchBonusData(quaggaApi);
+                    if (!championAnswer?.length) {
+                        console.warn('[Bonus] 再取得: 回答なし');
+                        return;
+                    }
+                    if (replaceBonusSlides(group, ref.data, championAnswer)) {
+                        console.log('[Bonus] チャンピオン回答を再読み込み');
+                        controller.render();
+                    }
+                } catch (err) {
+                    console.warn('[Bonus] 再取得失敗:', err.message);
+                }
+            });
+        }
 
     } catch (error) {
         console.error('Failed to initialize:', error);

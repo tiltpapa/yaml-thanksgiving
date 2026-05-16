@@ -36,7 +36,7 @@ export function renderQuestionSlide(question) {
 
     for (const value of Object.values(selections)) {
         const li = document.createElement('li');
-        _appendSelectionContent(li, value);
+        appendSelectionContent(li, value);
         ol.appendChild(li);
     }
     container.appendChild(ol);
@@ -183,7 +183,7 @@ export function renderSortQuestionSlide(question) {
     const ol = document.createElement('ol');
     for (const value of Object.values(selections)) {
         const li = document.createElement('li');
-        _appendSelectionContent(li, value);
+        appendSelectionContent(li, value);
         ol.appendChild(li);
     }
     container.appendChild(ol);
@@ -318,7 +318,7 @@ export function renderSortAnswerSlides(question) {
 /**
  * 選択肢の内容をliに追加（共通ヘルパー）
  */
-function _appendSelectionContent(li, value) {
+export function appendSelectionContent(li, value) {
     if (Array.isArray(value)) {
         const img = document.createElement('img');
         img.src = value[0];
@@ -384,7 +384,7 @@ function determineLayoutClass(selections, layout) {
 /**
  * 画像パスかどうか判定
  */
-function isImagePath(value) {
+export function isImagePath(value) {
     if (typeof value !== 'string') return false;
     return /\.(png|jpg|jpeg|gif|webp|svg)$/i.test(value);
 }
