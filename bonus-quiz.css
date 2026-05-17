@@ -92,23 +92,39 @@
   margin-top: 8px;
 }
 
-/* 画像ボーナス: champion-choices 内のサムネイル */
-.bonus-champion.image-quiz .champion-choices li {
-  height: auto;
-  min-height: 72px;
-  gap: 10px;
+/* 左に記号があるため右列のバッジ（::before）を非表示 */
+.bonus-champion .champion-choices li::before {
+  content: none !important
 }
 
-.bonus-champion.image-quiz .champion-choices li img {
-  max-height: 52px;
-  max-width: 72px;
-  width: auto;
+.bonus-champion .champion-choices li {
+  padding-left: 24px !important;
+}
+
+/* チャンピオン回答・画像: サムネ＋ラベル（問題スライドの .caption バッジは使わない） */
+.bonus-champion.image-quiz .champion-choices li.champion-choice-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: auto;
+  min-height: 72px;
+  gap: 12px;
+}
+
+.bonus-champion.image-quiz .champion-choice-thumb {
+  width: 56px;
+  height: 56px;
+  max-width: 56px;
+  max-height: 56px;
   object-fit: contain;
+  border-radius: 6px;
+  border: 3px solid rgba(255, 255, 255, 0.6);
   flex-shrink: 0;
 }
 
-.bonus-champion.image-quiz .champion-choices li .caption {
-  font-size: 0.75em;
+.bonus-champion.image-quiz .champion-choice-label {
+  font-size: 1.2em;
+  color: #fff;
   flex: 1;
   text-align: left;
 }

@@ -1,9 +1,9 @@
-/**
+﻿/**
  * ????????????????????
  * API????????????DOM??
  */
 
-import { isImagePath, appendSelectionContent } from './slide-renderer.js';
+import { isImagePath } from './slide-renderer.js';
 
 const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -30,7 +30,7 @@ export function extractChampionAnswer(aggregate, championUserId) {
         entry = answers.reduce((earliest, current) =>
             parseFloat(current.time) < parseFloat(earliest.time) ? current : earliest
         );
-        console.warn('[Bonus] ???????????????????');
+        console.warn('[Bonus] \u30c1\u30e3\u30f3\u30d4\u30aa\u30f3\u56de\u7b54\u672a\u691c\u51fa\u3001\u6700\u901f\u56de\u7b54\u3092\u63a1\u7528');
     }
 
     return parseAnswerOrder(entry.answer);
@@ -101,7 +101,37 @@ function resolveQuizClasses(question, itemCount) {
     };
 }
 
-function appendSortAnswerItem(li, item, hasImages, revealed) {
+function formatCaptionHtml(text) {
+    return String(text).replace(
+        /\*([^*]+)\*/g,
+        '<strong class="caption-highlight">$1</strong>'
+    );
+}
+
+/** ?????????????????????????????????? */
+function appendChampionChoiceItem(li, value, hasImages) {
+    if (hasImages) {
+        li.classList.add('champion-choice-row');
+        const img = document.createElement('img');
+        img.src = Array.isArray(value) ? value[0] : value;
+        img.alt = Array.isArray(value) ? value[1] || '' : '';
+        img.className = 'champion-choice-thumb';
+        li.appendChild(img);
+        const label = Array.isArray(value) ? value[1] : '';
+        if (label) {
+            const span = document.createElement('span');
+            span.className = 'champion-choice-label';
+            span.textContent = label;
+            li.appendChild(span);
+        }
+    } else {
+        const label = Array.isArray(value) ? value[1] || value[0] : value;
+        li.textContent = label ?? '';
+    }
+}
+
+/** ?????????????????????????????? li ?????? */
+function appendBonusRevealItem(li, item, hasImages, revealed) {
     const { value, caption } = item;
     if (!revealed) {
         li.classList.add('sort-hidden');
@@ -118,10 +148,7 @@ function appendSortAnswerItem(li, item, hasImages, revealed) {
         if (caption) {
             const cap = document.createElement('span');
             cap.className = 'sort-caption';
-            cap.innerHTML = String(caption).replace(
-                /\*([^*]+)\*/g,
-                '<strong class="caption-highlight">$1</strong>'
-            );
+            cap.innerHTML = formatCaptionHtml(caption);
             li.appendChild(cap);
         }
     } else {
@@ -130,23 +157,26 @@ function appendSortAnswerItem(li, item, hasImages, revealed) {
         if (caption) {
             const cap = document.createElement('span');
             cap.className = 'answer-caption';
-            cap.innerHTML = String(caption).replace(
-                /\*([^*]+)\*/g,
-                '<strong class="caption-highlight">$1</strong>'
-            );
+            cap.innerHTML = formatCaptionHtml(caption);
             li.appendChild(cap);
         }
     }
 }
 
+function championSlideTitle(layout) {
+    return layout['champion-title'] || '\u30c1\u30e3\u30f3\u30d4\u30aa\u30f3\u306e\u56de\u7b54';
+}
+
+function revealSlideTitle(layout, question) {
+    return layout['mini-title'] || question.title || '';
+}
+
 /**
  * ????????????
- * ?????????? answer sort + champion.css?champion-right / champion-choices?????
  */
 export function renderChampionSlide(question, championAnswer) {
     const layout = question.layout || {};
     const selections = question.selections || {};
-    const selectionKeys = Object.keys(selections);
     const { hasImages, typeClass, sortTaku, champTaku } = resolveQuizClasses(
         question,
         championAnswer.length
@@ -158,7 +188,7 @@ export function renderChampionSlide(question, championAnswer) {
 
     const title = document.createElement('h1');
     const titleSpan = document.createElement('span');
-    titleSpan.textContent = layout['champion-title'] || '?????????';
+    titleSpan.textContent = championSlideTitle(layout);
     title.appendChild(titleSpan);
     container.appendChild(title);
 
@@ -174,6 +204,7 @@ export function renderChampionSlide(question, championAnswer) {
 
     const symbolsDiv = document.createElement("div");
     symbolsDiv.className = 'answer-symbols';
+    const selectionKeys = Object.keys(selections);
     championAnswer.forEach(choiceNum => {
         const sym = document.createElement("div");
         sym.className = 'symbol-item';
@@ -194,14 +225,7 @@ export function renderChampionSlide(question, championAnswer) {
     championAnswer.forEach(choiceNum => {
         const li = document.createElement('li');
         const value = selections[String(choiceNum)];
-        li.dataset.symbol = badgeForKey(selectionKeys, choiceNum);
-        li.classList.add(`color-${choiceNum}`);
-        if (hasImages && value) {
-            appendSelectionContent(li, value);
-        } else {
-            const label = Array.isArray(value) ? value[1] || value[0] : value;
-            li.textContent = label ?? '';
-        }
+        appendChampionChoiceItem(li, value, hasImages);
         ol.appendChild(li);
     });
     right.appendChild(ol);
@@ -214,7 +238,7 @@ export function renderChampionSlide(question, championAnswer) {
 }
 
 /**
- * ???????????????? + ??????????????
+ * ???????????????? + ???????????
  * @returns {HTMLElement[]}
  */
 export function renderBonusRevealSlides(question, championAnswer) {
@@ -257,7 +281,7 @@ export function renderBonusRevealSlides(question, championAnswer) {
 
         const title = document.createElement('h1');
         const titleSpan = document.createElement('span');
-        titleSpan.textContent = layout['mini-title'] || question.title || '';
+        titleSpan.textContent = revealSlideTitle(layout, question);
         title.appendChild(titleSpan);
         container.appendChild(title);
 
@@ -297,7 +321,7 @@ export function renderBonusRevealSlides(question, championAnswer) {
             const badgeLabel = String.fromCharCode(65 + originalIndex);
             li.dataset.badge = badgeLabel;
             li.classList.add(`badge-${originalIndex + 1}`);
-            appendSortAnswerItem(li, item, hasImages, revealed);
+            appendBonusRevealItem(li, item, hasImages, revealed);
             ol.appendChild(li);
         });
 
@@ -331,7 +355,7 @@ export async function buildBonusSlideStack(question, quaggaApi) {
             const data = await fetchBonusData(quaggaApi);
             championAnswer = data.championAnswer;
         } catch (err) {
-            console.warn('[Bonus] API????:', err.message);
+            console.warn('[Bonus] API\u53d6\u5f97\u5931\u6557:', err.message);
         }
     }
 
@@ -339,13 +363,13 @@ export async function buildBonusSlideStack(question, quaggaApi) {
         const placeholder = document.createElement("div");
         placeholder.className = 'bonus-error';
         placeholder.textContent =
-            '?????????????????config.js / API??????C???????';
+            '\u30c1\u30e3\u30f3\u30d4\u30aa\u30f3\u56de\u7b54\u3092\u53d6\u5f97\u3067\u304d\u307e\u305b\u3093\uff08config.js / API\u63a5\u7d9a\u3092\u78ba\u8a8d\u3001C\u30ad\u30fc\u3067\u518d\u53d6\u5f97\uff09';
         stack.push({ type: 'bonus-error', data: question, element: placeholder });
         return stack;
     }
 
     if (championAnswer.length !== correctOrder.length) {
-        console.warn('[Bonus] ?????????????', championAnswer, correctOrder);
+        console.warn('[Bonus] \u56de\u7b54\u6570\u304c\u6b63\u89e3\u3068\u4e00\u81f4\u3057\u307e\u305b\u3093', championAnswer, correctOrder);
     }
 
     stack.push({
