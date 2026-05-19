@@ -3,7 +3,10 @@
  * API????????????DOM??
  */
 
-import { isImagePath } from './slide-renderer.js';
+import {
+    createMediaElement,
+    isVisualMediaPath,
+} from './media.js';
 
 const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -91,7 +94,7 @@ function sortTakuClass(count) {
 function resolveQuizClasses(question, itemCount) {
     const selections = question.selections || {};
     const hasImages = Object.values(selections).some(v =>
-        isImagePath(v) || (Array.isArray(v) && isImagePath(v[0]))
+        isVisualMediaPath(v) || (Array.isArray(v) && isVisualMediaPath(v[0]))
     );
     return {
         hasImages,
@@ -112,11 +115,11 @@ function formatCaptionHtml(text) {
 function appendChampionChoiceItem(li, value, hasImages) {
     if (hasImages) {
         li.classList.add('champion-choice-row');
-        const img = document.createElement('img');
-        img.src = Array.isArray(value) ? value[0] : value;
-        img.alt = Array.isArray(value) ? value[1] || '' : '';
-        img.className = 'champion-choice-thumb';
-        li.appendChild(img);
+        const media = createMediaElement(value, { stage: 'answer', alt: Array.isArray(value) ? value[1] || '' : '' });
+        if (media) {
+            media.className = 'champion-choice-thumb';
+            li.appendChild(media);
+        }
         const label = Array.isArray(value) ? value[1] : '';
         if (label) {
             const span = document.createElement('span');
@@ -139,12 +142,11 @@ function appendBonusRevealItem(li, item, hasImages, revealed) {
     }
     if (hasImages) {
         li.classList.add('sort-image-row');
-        const img = document.createElement('img');
-        const imgSrc = Array.isArray(value) ? value[0] : value;
-        img.src = imgSrc;
-        img.alt = caption || '';
-        img.className = 'sort-thumb';
-        li.appendChild(img);
+        const media = createMediaElement(value, { stage: 'answer', alt: caption || '' });
+        if (media) {
+            media.className = 'sort-thumb';
+            li.appendChild(media);
+        }
         if (caption) {
             const cap = document.createElement('span');
             cap.className = 'sort-caption';

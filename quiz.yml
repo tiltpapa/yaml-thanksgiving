@@ -75,8 +75,8 @@ questions:
       type: "select"
       mini-title: "どちらが好き？"
     selections:
-      1: ["images/baseball.png", "野球"]
-      2: ["images/soccer.png", "サッカー"]
+      1: ["images/sample.mp4", "野球"]
+      2: ["images/sample2.mp4", "サッカー"]
     answer:
       answer: [2]
 
@@ -151,7 +151,7 @@ questions:
     layout:
       type: "select"
       mini-title: "この花は？"
-      large-image: "images/himawari.jpg"
+      large-image: "images/sample.mp4"
     selections:
       1: "ひまわり"
       2: "バラ"
@@ -191,7 +191,7 @@ questions:
       text:
         - "これは何でしょう？"
         - "ヒント: 夏の花"
-      image: "images/himawari-land.jpg"
+      image: "images/sample.mp4"
     layout:
       type: "select"
       mini-title: "この花は？"

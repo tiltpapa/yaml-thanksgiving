@@ -165,12 +165,17 @@ h1::before, li::before, li::after {
   text-shadow: 1px 1px 3px rgba(255,255,255,0.5);
 }
 
-.lead-in-image {
+.lead-in-media {
   max-width: 60%;
   max-height: 55%;
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  display: block;
+}
+
+.lead-in-video {
+  background: #000;
 }
 
 
