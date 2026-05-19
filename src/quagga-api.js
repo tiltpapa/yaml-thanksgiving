@@ -9,6 +9,51 @@
 const API_BASE = 'https://quagga.studio/api/v1';
 
 /**
+ * API回答文字列を個別キーへ分解する
+ * 例: "1,2,3" -> ["1", "2", "3"]
+ * @param {string|string[]|null|undefined} answer
+ * @returns {string[]}
+ */
+export function parseAnswerChoices(answer) {
+  if (answer == null || answer === '') return [];
+  if (Array.isArray(answer)) {
+    return answer.flatMap(parseAnswerChoices);
+  }
+
+  return String(answer)
+    .split(',')
+    .map(part => part.trim())
+    .filter(Boolean);
+}
+
+/**
+ * last_aggregate から選択肢別回答数・正解者数を集計
+ * @param {{ question?: object, answers?: object[] }|null|undefined} aggregate
+ * @returns {{ counts: { [choiceKey: string]: number }, correctCount: number }}
+ */
+export function summarizeAggregate(aggregate) {
+  const counts = {};
+  const choiceNum = aggregate?.question?.choice_number ?? 0;
+
+  for (let i = 1; i <= choiceNum; i++) {
+    counts[String(i)] = 0;
+  }
+
+  let correctCount = 0;
+  for (const a of aggregate?.answers ?? []) {
+    if (a?.correct === true) {
+      correctCount++;
+    }
+
+    for (const key of parseAnswerChoices(a?.answer)) {
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+  }
+
+  return { counts, correctCount };
+}
+
+/**
  * モックデータ（debugMode: true のとき使用）
  */
 const MOCK = {
@@ -129,8 +174,9 @@ export class QuaggaApiClient {
     }
 
     for (const a of data.answers ?? []) {
-      const key = String(a.answer);
-      counts[key] = (counts[key] ?? 0) + 1;
+      for (const key of parseAnswerChoices(a.answer)) {
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
     }
 
     return counts;
