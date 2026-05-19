@@ -9,6 +9,24 @@
 const API_BASE = 'https://quagga.studio/api/v1';
 
 /**
+ * API回答文字列を個別キーへ分解する
+ * 例: "1,2,3" -> ["1", "2", "3"]
+ * @param {string|string[]|null|undefined} answer
+ * @returns {string[]}
+ */
+export function parseAnswerChoices(answer) {
+  if (answer == null || answer === '') return [];
+  if (Array.isArray(answer)) {
+    return answer.flatMap(parseAnswerChoices);
+  }
+
+  return String(answer)
+    .split(',')
+    .map(part => part.trim())
+    .filter(Boolean);
+}
+
+/**
  * モックデータ（debugMode: true のとき使用）
  */
 const MOCK = {
@@ -129,8 +147,9 @@ export class QuaggaApiClient {
     }
 
     for (const a of data.answers ?? []) {
-      const key = String(a.answer);
-      counts[key] = (counts[key] ?? 0) + 1;
+      for (const key of parseAnswerChoices(a.answer)) {
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
     }
 
     return counts;
