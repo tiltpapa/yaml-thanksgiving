@@ -24,6 +24,29 @@ export function injectAnswerCounts(slideEl, counts) {
 }
 
 /**
+ * 正解発表スライドの countdown-timer に正解者数を表示
+ *
+ * @param {HTMLElement} slideEl
+ * @param {number} correctCount
+ */
+export function injectCorrectAnswerCount(slideEl, correctCount) {
+  const timerEl = slideEl.querySelector('.countdown-timer');
+  if (!timerEl) return;
+
+  timerEl.dataset.mode = 'count';
+  timerEl.dataset.count = String(correctCount ?? 0);
+  timerEl.textContent = '';
+  const numberEl = document.createElement('span');
+  numberEl.className = 'count-number';
+  numberEl.textContent = String(correctCount ?? 0);
+  const unitEl = document.createElement('span');
+  unitEl.className = 'count-unit';
+  unitEl.textContent = '人';
+  timerEl.append(numberEl, unitEl);
+  timerEl.classList.remove('timer-warning');
+}
+
+/**
  * ランキングリストのDOM要素を生成
  *
  * @param {object[]} results  Quagga API の results 配列

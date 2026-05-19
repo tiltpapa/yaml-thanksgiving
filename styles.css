@@ -203,6 +203,22 @@ h1::before, li::before, li::after {
               0 2px 4px rgba(0,0,0,0.4);
 }
 
+.countdown-timer--static {
+  font-size: 2.4em;
+}
+
+.countdown-timer .count-number {
+  line-height: 1;
+}
+
+.countdown-timer .count-unit {
+  font-size: 0.45em;
+  line-height: 1;
+  margin-left: 0.12em;
+  align-self: flex-end;
+  padding-bottom: 0.12em;
+}
+
 /* タイマー警告演出 */
 .timer-warning::after {
   content: '';

@@ -27,6 +27,33 @@ export function parseAnswerChoices(answer) {
 }
 
 /**
+ * last_aggregate から選択肢別回答数・正解者数を集計
+ * @param {{ question?: object, answers?: object[] }|null|undefined} aggregate
+ * @returns {{ counts: { [choiceKey: string]: number }, correctCount: number }}
+ */
+export function summarizeAggregate(aggregate) {
+  const counts = {};
+  const choiceNum = aggregate?.question?.choice_number ?? 0;
+
+  for (let i = 1; i <= choiceNum; i++) {
+    counts[String(i)] = 0;
+  }
+
+  let correctCount = 0;
+  for (const a of aggregate?.answers ?? []) {
+    if (a?.correct === true) {
+      correctCount++;
+    }
+
+    for (const key of parseAnswerChoices(a?.answer)) {
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+  }
+
+  return { counts, correctCount };
+}
+
+/**
  * モックデータ（debugMode: true のとき使用）
  */
 const MOCK = {

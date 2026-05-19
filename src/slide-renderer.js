@@ -5,6 +5,14 @@ import {
     isVisualMediaPath,
 } from './media.js';
 
+export function createAnswerCountTimer() {
+    const timer = document.createElement('div');
+    timer.className = 'countdown-timer countdown-timer--static';
+    timer.dataset.mode = 'count';
+    timer.textContent = '';
+    return timer;
+}
+
 export function renderQuestionSlide(question, { stage = 'question' } = {}) {
     const container = document.createElement('div');
     const layout = question.layout || {};
@@ -198,9 +206,9 @@ export function renderSortAnswerSlides(question) {
         steps.push(count);
     }
 
-    return steps.map(revealCount => {
+    return steps.map((revealCount, index) => {
         const container = document.createElement('div');
-        container.className = `answer sort ${typeClass} ${takuClass}`;
+        container.className = `answer sort sort-answer ${typeClass} ${takuClass}`;
 
         const title = document.createElement('h1');
         const titleSpan = document.createElement('span');
@@ -258,6 +266,11 @@ export function renderSortAnswerSlides(question) {
             ol.appendChild(li);
         });
         container.appendChild(ol);
+
+        const showTimer = index === steps.length - 1;
+        if (showTimer) {
+            container.appendChild(createAnswerCountTimer());
+        }
 
         return container;
     });
