@@ -138,6 +138,10 @@
     font-weight: 700;
 }
 
+.ranking-slide.no-point .ranking-list .ranking-item {
+    padding-right: 100px;
+}
+
 /* ===============================
    上位者の特別スタイル
 ================================ */
@@ -182,6 +186,15 @@
     transform: rotateX(180deg);
 }
 
+.ranking-slide .ranking-item.reveal-pending {
+    opacity: 0;
+    transform: translateY(18px) rotateX(-80deg);
+}
+
+.ranking-slide .ranking-item.reveal-animate {
+    animation: rankRevealIn 0.55s ease-out both;
+}
+
 .ranking-slide .ranking-item.flip-ready .rank-name,
 .ranking-slide .ranking-item.flip-ready .rank-point,
 .ranking-slide .ranking-item.flip-ready .rank-time {
@@ -207,6 +220,17 @@
 @keyframes rankRevealContent {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+@keyframes rankRevealIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) rotateX(-80deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
 }
 
 /* ===============================
