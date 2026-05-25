@@ -136,6 +136,12 @@
     color: #fff;
     font-size: 1.1em;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+}
+
+.ranking-slide.no-point .ranking-list .ranking-item {
+    padding-right: 100px;
 }
 
 /* ===============================
@@ -174,12 +180,35 @@
     color: #fff;
 }
 
+.ranking-slide .ranking-item.rank-worst {
+    background: linear-gradient(#3a0014, #b00035);
+    border-color: #ff5c87;
+    box-shadow:
+        inset 0 1px 3px rgba(255, 255, 255, 0.25),
+        0 0 18px rgba(255, 68, 120, 0.45),
+        0 3px 6px rgba(0, 0, 0, 0.45);
+}
+
+.ranking-slide .ranking-item.rank-worst .rank-number {
+    background: linear-gradient(#ff7a99, #c9003f);
+    color: #fff;
+}
+
 /* ===============================
    フリップアニメーション
 ================================ */
 
 .ranking-slide .ranking-item.flip-ready {
     transform: rotateX(180deg);
+}
+
+.ranking-slide .ranking-item.reveal-pending {
+    opacity: 0;
+    transform: translateY(18px) rotateX(-80deg);
+}
+
+.ranking-slide .ranking-item.reveal-animate {
+    animation: rankRevealIn 0.55s ease-out both;
 }
 
 .ranking-slide .ranking-item.flip-ready .rank-name,
@@ -207,6 +236,17 @@
 @keyframes rankRevealContent {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+@keyframes rankRevealIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) rotateX(-80deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
 }
 
 /* ===============================

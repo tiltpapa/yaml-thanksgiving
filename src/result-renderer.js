@@ -46,6 +46,19 @@ export function injectCorrectAnswerCount(slideEl, correctCount) {
   timerEl.classList.remove('timer-warning');
 }
 
+function formatRankingTime(time) {
+  const seconds = Number.parseFloat(time);
+  if (!Number.isFinite(seconds)) return '';
+
+  if (seconds < 60) {
+    return seconds.toFixed(2).padStart(5, '0');
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds - minutes * 60;
+  return `${minutes}:${rest.toFixed(2).padStart(5, '0')}`;
+}
+
 /**
  * ランキングリストのDOM要素を生成
  *
@@ -54,7 +67,7 @@ export function injectCorrectAnswerCount(slideEl, correctCount) {
  * @param {number}   [opts.limit=10]  表示件数
  * @returns {HTMLElement}  <ol class="ranking-list">
  */
-export function renderRankingList(results, { limit = 10 } = {}) {
+export function renderRankingList(results, { limit = 10, showPoint = true, reveal = false } = {}) {
   const ol = document.createElement('ol');
   ol.className = 'ranking-list';
 
@@ -63,6 +76,8 @@ export function renderRankingList(results, { limit = 10 } = {}) {
   slice.forEach((result) => {
     const li = document.createElement('li');
     li.className = `ranking-item rank-${result.rank}`;
+    li.dataset.rank = String(result.rank);
+    if (reveal) li.classList.add('reveal-pending');
 
     const rankEl = document.createElement('span');
     rankEl.className = 'rank-number';
@@ -72,17 +87,20 @@ export function renderRankingList(results, { limit = 10 } = {}) {
     nameEl.className = 'rank-name';
     nameEl.textContent = result.member?.user?.name ?? '—';
 
-    const pointEl = document.createElement('span');
-    pointEl.className = 'rank-point';
-    pointEl.textContent = `${result.point} P`;
-
     const timeEl = document.createElement('span');
     timeEl.className = 'rank-time';
-    timeEl.textContent = result.time
-      ? `${parseFloat(result.time).toFixed(2)} s`
-      : '';
+    timeEl.textContent = result.time ? formatRankingTime(result.time) : '';
 
-    li.append(rankEl, nameEl, pointEl, timeEl);
+    li.append(rankEl, nameEl);
+
+    if (showPoint) {
+      const pointEl = document.createElement('span');
+      pointEl.className = 'rank-point';
+      pointEl.textContent = `${result.point} P`;
+      li.appendChild(pointEl);
+    }
+
+    li.appendChild(timeEl);
     ol.appendChild(li);
   });
 
@@ -101,6 +119,7 @@ export function renderRankingList(results, { limit = 10 } = {}) {
 export function renderRankingSlide(title, results, opts = {}) {
   const container = document.createElement('div');
   container.className = 'ranking-slide';
+  if (opts.showPoint === false) container.classList.add('no-point');
 
   const titleEl = document.createElement('div');
   titleEl.className = 'ranking-title';

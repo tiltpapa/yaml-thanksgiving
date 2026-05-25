@@ -16,18 +16,20 @@
     </div>
 
     <div id="ranking-hint" class="ranking-hint">
-        <span>1: 問題ランキング</span>
-        <span>2: ピリオドランキング</span>
-        <span>3: 総合ランキング</span>
+        <span>1: 問題トップ10</span>
+        <span>4: 問題ワースト10</span>
+        <span>5: 問題全体</span>
+        <span>2: ピリオド</span>
+        <span>3: 総合</span>
+        <span>Space/Enter: 手動表示</span>
+        <span>←/→: ページ</span>
         <span>R: 再取得</span>
-        <span>← →: ページ切替</span>
     </div>
 
     <script type="module">
         import { QuaggaApiClient } from './src/quagga-api.js';
         import { renderRankingSlide } from './src/result-renderer.js';
 
-        // config.js が存在しない場合のフォールバック
         let config;
         try {
             ({ config } = await import('./config.js'));
@@ -39,56 +41,164 @@
         const api = new QuaggaApiClient(config);
         const container = document.getElementById('current-slide');
 
-        // ページネーション状態
         let pages = [];
         let pageIndex = 0;
+        let revealQueue = [];
+        let revealTimer = null;
+        let currentLoader = () => loadQuestionRanking('top');
+
+        function clearRevealTimer() {
+            if (revealTimer == null) return;
+            window.clearTimeout(revealTimer);
+            revealTimer = null;
+        }
 
         function showPage(index) {
             if (pages.length === 0) return;
+            clearRevealTimer();
             pageIndex = Math.max(0, Math.min(index, pages.length - 1));
             container.innerHTML = '';
             container.appendChild(pages[pageIndex]);
+            setupReveal(pages[pageIndex]);
         }
 
-        function buildPages(title, results) {
-            const limit = config.countOneScreen ?? 10;
+        function buildPages(title, results, opts = {}) {
+            const limit = opts.limit ?? config.countOneScreen ?? 10;
             pages = [];
             pageIndex = 0;
 
             if (results.length === 0) {
-                pages.push(renderRankingSlide(title, [], { limit }));
+                const page = renderRankingSlide(title, [], opts);
+                pages.push(page);
                 showPage(0);
                 return;
             }
 
-            // limit 件ずつ分割
             for (let i = 0; i < results.length; i += limit) {
-                const slice = results.slice(i, i + limit);
-                const page = renderRankingSlide(
-                    `${title}${results.length > limit ? ` (${Math.floor(i / limit) + 1}/${Math.ceil(results.length / limit)})` : ''}`,
-                    slice,
-                    { limit }
-                );
+                const page = renderRankingSlide(title, results.slice(i, i + limit), {
+                    limit,
+                    showPoint: opts.showPoint,
+                    reveal: opts.reveal ?? true,
+                });
+                page.dataset.manualRanks = (opts.manualRanks ?? []).join(',');
+                page.dataset.reveal = String(opts.reveal ?? true);
+                page.dataset.revealOrder = opts.revealOrder ?? 'desc';
+                if (opts.markLastAsWorst) {
+                    page.querySelector('.ranking-item:last-child')?.classList.add('rank-worst');
+                }
                 pages.push(page);
+            }
+
+            if (opts.pageOrder === 'desc') {
+                pages.reverse();
             }
 
             showPage(0);
         }
 
-        async function loadQuestionRanking() {
+        function setupReveal(page) {
+            revealQueue = [];
+            if (!page || page.dataset.reveal === 'false') return;
+
+            revealQueue = [...page.querySelectorAll('.ranking-item.reveal-pending')];
+            if (page.dataset.revealOrder !== 'asc') {
+                revealQueue.reverse();
+            }
+            revealTimer = window.setTimeout(revealAutoItems, 300);
+        }
+
+        function getManualRanks() {
+            const page = pages[pageIndex];
+            if (!page?.dataset.manualRanks) return new Set();
+
+            return new Set(
+                page.dataset.manualRanks
+                    .split(',')
+                    .map(value => Number(value))
+                    .filter(value => Number.isFinite(value))
+            );
+        }
+
+        function revealItem(item) {
+            item.classList.remove('reveal-pending');
+            item.classList.add('reveal-animate');
+        }
+
+        function revealAutoItems() {
+            clearRevealTimer();
+            if (revealQueue.length === 0) return;
+
+            const next = revealQueue[0];
+            const rank = Number(next.dataset.rank);
+            if (getManualRanks().has(rank)) return;
+
+            revealItem(revealQueue.shift());
+            revealTimer = window.setTimeout(revealAutoItems, 450);
+        }
+
+        function revealNextManualItem() {
+            clearRevealTimer();
+            if (revealQueue.length === 0) return;
+
+            revealItem(revealQueue.shift());
+            revealAutoItems();
+        }
+
+        function rankQuestionAnswers(answers) {
+            const sortedAnswers = [...answers].sort((a, b) => {
+                const aTime = Number.parseFloat(a.time);
+                const bTime = Number.parseFloat(b.time);
+                return aTime - bTime;
+            });
+
+            let currentRank = 1;
+            return sortedAnswers.map((answer, index) => {
+                if (index > 0 && answer.time !== sortedAnswers[index - 1].time) {
+                    currentRank = index + 1;
+                }
+
+                return {
+                    rank: currentRank,
+                    point: answer.point,
+                    time: answer.time,
+                    member: answer.member,
+                };
+            });
+        }
+
+        async function loadQuestionRanking(mode = 'top') {
             try {
                 const data = await api.getLastAggregate();
-                const answers = data.answers ?? [];
+                const results = rankQuestionAnswers(data.answers ?? []);
+                const commonOpts = { showPoint: false, reveal: true };
 
-                // タイム昇順でソート → rank 付与
-                answers.sort((a, b) => parseFloat(a.time) - parseFloat(b.time));
-                let currentRank = 1;
-                const results = answers.map((a, i) => {
-                    if (i > 0 && a.time !== answers[i - 1].time) currentRank = i + 1;
-                    return { rank: currentRank, point: a.point, time: a.time, member: a.member };
+                if (mode === 'worst') {
+                    const worstResults = results.slice(-10);
+                    const lastRank = worstResults.at(-1)?.rank;
+
+                    buildPages('問題ランキング ワースト10', worstResults, {
+                        ...commonOpts,
+                        limit: 10,
+                        revealOrder: 'asc',
+                        manualRanks: lastRank == null ? [] : [lastRank],
+                        markLastAsWorst: true,
+                    });
+                    return;
+                }
+
+                if (mode === 'all') {
+                    buildPages('問題ランキング 全体', results, {
+                        ...commonOpts,
+                        revealOrder: 'asc',
+                    });
+                    return;
+                }
+
+                buildPages('問題ランキング トップ10', results.slice(0, 10), {
+                    ...commonOpts,
+                    limit: 10,
+                    manualRanks: [1],
                 });
-
-                buildPages('問題ランキング', results);
             } catch (e) {
                 showError(e);
             }
@@ -97,7 +207,11 @@
         async function loadPeriodRanking() {
             try {
                 const data = await api.getPeriodResult();
-                buildPages('ピリオドランキング', data.results ?? []);
+                buildPages('ピリオドランキング', data.results ?? [], {
+                    showPoint: true,
+                    reveal: true,
+                    manualRanks: [1],
+                });
             } catch (e) {
                 showError(e);
             }
@@ -106,31 +220,43 @@
         async function loadTotalRanking() {
             try {
                 const data = await api.getTotalResult();
-                buildPages('総合ランキング', data.results ?? []);
+                buildPages('総合ランキング', data.results ?? [], {
+                    showPoint: true,
+                    reveal: true,
+                    manualRanks: [1, 2, 3],
+                    pageOrder: 'desc',
+                });
             } catch (e) {
                 showError(e);
             }
         }
 
         function showError(err) {
+            clearRevealTimer();
             container.innerHTML = `<div class="error">取得エラー: ${err.message}</div>`;
         }
-
-        let currentLoader = loadQuestionRanking;
 
         document.addEventListener('keydown', async (e) => {
             switch (e.key) {
                 case '1':
-                    currentLoader = loadQuestionRanking;
-                    await loadQuestionRanking();
+                    currentLoader = () => loadQuestionRanking('top');
+                    await currentLoader();
+                    break;
+                case '4':
+                    currentLoader = () => loadQuestionRanking('worst');
+                    await currentLoader();
+                    break;
+                case '5':
+                    currentLoader = () => loadQuestionRanking('all');
+                    await currentLoader();
                     break;
                 case '2':
                     currentLoader = loadPeriodRanking;
-                    await loadPeriodRanking();
+                    await currentLoader();
                     break;
                 case '3':
                     currentLoader = loadTotalRanking;
-                    await loadTotalRanking();
+                    await currentLoader();
                     break;
                 case 'r':
                 case 'R':
@@ -144,11 +270,15 @@
                     e.preventDefault();
                     showPage(pageIndex - 1);
                     break;
+                case ' ':
+                case 'Enter':
+                    e.preventDefault();
+                    revealNextManualItem();
+                    break;
             }
         });
 
-        // 初期表示
-        container.innerHTML = '<div class="ranking-slide"><div class="ranking-title">ランキング</div><p class="ranking-empty">1〜3キーでデータを取得</p></div>';
+        container.innerHTML = '<div class="ranking-slide"><div class="ranking-title">ランキング</div><p class="ranking-empty">1〜5キーでデータを取得</p></div>';
     </script>
 </body>
 </html>
