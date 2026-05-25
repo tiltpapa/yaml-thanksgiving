@@ -83,6 +83,9 @@
                 page.dataset.manualRanks = (opts.manualRanks ?? []).join(',');
                 page.dataset.reveal = String(opts.reveal ?? true);
                 page.dataset.revealOrder = opts.revealOrder ?? 'desc';
+                if (opts.markLastAsWorst) {
+                    page.querySelector('.ranking-item:last-child')?.classList.add('rank-worst');
+                }
                 pages.push(page);
             }
 
@@ -170,9 +173,15 @@
                 const commonOpts = { showPoint: false, reveal: true };
 
                 if (mode === 'worst') {
-                    buildPages('問題ランキング ワースト10', results.slice(-10), {
+                    const worstResults = results.slice(-10);
+                    const lastRank = worstResults.at(-1)?.rank;
+
+                    buildPages('問題ランキング ワースト10', worstResults, {
                         ...commonOpts,
                         limit: 10,
+                        revealOrder: 'asc',
+                        manualRanks: lastRank == null ? [] : [lastRank],
+                        markLastAsWorst: true,
                     });
                     return;
                 }

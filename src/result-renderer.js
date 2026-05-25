@@ -46,6 +46,19 @@ export function injectCorrectAnswerCount(slideEl, correctCount) {
   timerEl.classList.remove('timer-warning');
 }
 
+function formatRankingTime(time) {
+  const seconds = Number.parseFloat(time);
+  if (!Number.isFinite(seconds)) return '';
+
+  if (seconds < 60) {
+    return seconds.toFixed(2).padStart(5, '0');
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds - minutes * 60;
+  return `${minutes}:${rest.toFixed(2).padStart(5, '0')}`;
+}
+
 /**
  * ランキングリストのDOM要素を生成
  *
@@ -76,9 +89,7 @@ export function renderRankingList(results, { limit = 10, showPoint = true, revea
 
     const timeEl = document.createElement('span');
     timeEl.className = 'rank-time';
-    timeEl.textContent = result.time
-      ? `${parseFloat(result.time).toFixed(2)} s`
-      : '';
+    timeEl.textContent = result.time ? formatRankingTime(result.time) : '';
 
     li.append(rankEl, nameEl);
 

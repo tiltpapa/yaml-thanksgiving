@@ -136,6 +136,8 @@
     color: #fff;
     font-size: 1.1em;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 
 .ranking-slide.no-point .ranking-list .ranking-item {
@@ -175,6 +177,20 @@
 
 .ranking-slide .ranking-item.rank-3 .rank-number {
     background: linear-gradient(#CD7F32, #8B4513);
+    color: #fff;
+}
+
+.ranking-slide .ranking-item.rank-worst {
+    background: linear-gradient(#3a0014, #b00035);
+    border-color: #ff5c87;
+    box-shadow:
+        inset 0 1px 3px rgba(255, 255, 255, 0.25),
+        0 0 18px rgba(255, 68, 120, 0.45),
+        0 3px 6px rgba(0, 0, 0, 0.45);
+}
+
+.ranking-slide .ranking-item.rank-worst .rank-number {
+    background: linear-gradient(#ff7a99, #c9003f);
     color: #fff;
 }
 
