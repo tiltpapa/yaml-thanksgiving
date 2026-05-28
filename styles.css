@@ -232,7 +232,6 @@ h1::before, li::before, li::after {
   background: rgba(255, 0, 0, 0.3);
   animation: ripple 1s ease-out;
   pointer-events: none;
-  align-content: center;
 }
 
 @keyframes ripple {
