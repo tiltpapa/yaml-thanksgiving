@@ -121,12 +121,10 @@ export function renderLeadInSlide(question) {
         container.appendChild(textEl);
     }
 
-    if (leadIn.image) {
-        const media = createMediaElement(leadIn.image, { stage: 'question', alt: '' });
+    for (const source of [leadIn.image, leadIn.audio || leadIn.sound].filter(Boolean)) {
+        const media = createMediaElement(source, { stage: 'lead-in', alt: '' });
         if (media) {
-            media.className = media.tagName === 'VIDEO'
-                ? 'lead-in-media lead-in-video'
-                : 'lead-in-media lead-in-image';
+            media.className = leadInMediaClassName(media);
             container.appendChild(media);
         }
     }
@@ -305,6 +303,7 @@ export function appendSelectionContent(li, value, { stage = 'question' } = {}) {
 export function renderTitleSlide(question) {
     const container = document.createElement('div');
     container.className = 'title-slide';
+    const layout = question.layout || {};
 
     const title = document.createElement('h1');
     title.textContent = question.title || '';
@@ -316,7 +315,25 @@ export function renderTitleSlide(question) {
         container.appendChild(subtitle);
     }
 
+    const titleMedia = layout.image || layout['large-image'];
+    if (titleMedia) {
+        const media = createMediaElement(titleMedia, {
+            stage: 'title',
+            alt: '',
+            className: 'title-media',
+        });
+        if (media) {
+            container.appendChild(media);
+        }
+    }
+
     return container;
+}
+
+function leadInMediaClassName(media) {
+    if (media.tagName === 'VIDEO') return 'lead-in-media lead-in-video';
+    if (media.tagName === 'AUDIO') return 'lead-in-audio';
+    return 'lead-in-media lead-in-image';
 }
 
 function determineLayoutClass(selections, layout) {

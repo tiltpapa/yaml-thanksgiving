@@ -1,4 +1,5 @@
 import { CountdownTimer } from '../lib/countdown.js';
+import { playSlideMedia } from './media.js';
 
 /**
  * スライドの2次元ナビゲーションを管理
@@ -54,6 +55,7 @@ export class SlideController {
         
         this.container.innerHTML = '';
         this.container.appendChild(slide.element);
+        playSlideMedia(slide.element);
 
         // questionスライドのみタイマーを起動
         if (slide.type === 'question') {

@@ -1,3 +1,24 @@
+settings:
+  #ここに背景やBGM・SEの設定
+  backgrounds:
+    title:
+      image: "images/title-bg.png"
+    select:
+      css: "linear-gradient(135deg, #aaeeff, #00aaff)"
+    sort:
+      color: "#102040"
+  #   bonus:
+  #     image: "images/bonus-bg.png"
+  audio:
+    question:
+      by_time:
+        10: "sounds/question-10.mp3"
+        15: "sounds/question-15.mp3"
+      default: "sounds/question-10.mp3"
+    result: "sounds/result.mp3"
+    answer: "sounds/answer.mp3"
+    reveal: "sounds/reveal.mp3"
+---
 questions:
   # ===============================
   # タイトルスライド
@@ -12,6 +33,17 @@ questions:
   # ===============================
   - title: "テキスト2択テスト"
     time_limit: 10
+    # 個別設定例: この問題だけ全体設定より優先
+    background:
+      css: "radial-gradient(circle at 18% 18%, rgba(255,255,255,0.45), transparent 28%), linear-gradient(135deg, #ffe08a, #f28b30)"
+    audio:
+      question:
+        # by_time:
+        #   10: "sounds/question-10.mp3"
+        default: "sounds/question-special.mp3"
+    #   result: "sounds/result.mp3"
+    #   answer: "sounds/answer.mp3"
+    #   reveal: "sounds/reveal.mp3"
     layout:
       type: "select"
       mini-title: "どちらが好き？"
@@ -41,6 +73,9 @@ questions:
   # text-6taku: テキスト6択
   # ===============================
   - title: "テキスト6択テスト"
+    lead-in:
+      text: "♪音楽"
+      audio: "sounds/question-special.mp3"
     layout:
       type: "select"
       mini-title: "好きなスポーツは？"
@@ -71,6 +106,8 @@ questions:
   # image-2taku: 画像2択（キャプション付き）
   # ===============================
   - title: "画像2択キャプション付き"
+    lead-in:
+      image: "images/lead-in.mp4"
     layout:
       type: "select"
       mini-title: "どちらが好き？"
