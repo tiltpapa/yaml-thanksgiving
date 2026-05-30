@@ -227,6 +227,17 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+.image-quiz.caption-delay-enabled ol li .caption.caption-delayed {
+  opacity: 0;
+  animation: captionFadeIn 0.45s ease forwards;
+  animation-delay: var(--caption-delay, 1s);
+}
+
+@keyframes captionFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* ===============================
    画像選択肢の回答数表示
 ================================ */

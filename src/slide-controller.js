@@ -55,6 +55,7 @@ export class SlideController {
         
         this.container.innerHTML = '';
         this.container.appendChild(slide.element);
+        restartDelayedCaptionAnimations(slide.element);
         playSlideMedia(slide.element);
 
         // questionスライドのみタイマーを起動
@@ -219,5 +220,14 @@ export class SlideController {
                     break;
             }
         });
+    }
+}
+
+function restartDelayedCaptionAnimations(root) {
+    const captions = root.querySelectorAll('.caption.caption-delayed');
+    for (const caption of captions) {
+        caption.style.animation = 'none';
+        void caption.offsetHeight;
+        caption.style.animation = '';
     }
 }

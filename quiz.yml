@@ -139,6 +139,7 @@ questions:
     layout:
       type: "select"
       mini-title: "水泳はどれ？"
+      caption-delay: 5
     selections:
       1: ["images/baseball.png", "野球"]
       2: ["images/soccer.png", "サッカー"]

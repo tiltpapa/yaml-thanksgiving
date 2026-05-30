@@ -73,6 +73,7 @@ layout:
   type: "select"        # 問題タイプ（現在は select のみ）
   mini-title: "問題文"  # 問題スライドに表示する問題文
   large-image: "images/sample.jpg"  # 大きな画像（省略可）
+  caption-delay: 1.5    # 画像選択肢キャプションを1.5秒後にフェードイン（省略時は最初から表示）
 ```
 
 ### 選択肢数による自動判定
@@ -130,6 +131,18 @@ selections:
 ### 画像＋キャプション選択肢
 
 ```yaml
+selections:
+  1: ["images/baseball.png", "野球"]
+  2: ["images/soccer.png", "サッカー"]
+```
+
+問題スライドでキャプションを遅れて表示する場合：
+
+```yaml
+layout:
+  type: "select"
+  mini-title: "どっちが好き？"
+  caption-delay: 1.5
 selections:
   1: ["images/baseball.png", "野球"]
   2: ["images/soccer.png", "サッカー"]

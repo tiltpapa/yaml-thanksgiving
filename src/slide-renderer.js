@@ -20,6 +20,11 @@ export function renderQuestionSlide(question, { stage = 'question' } = {}) {
 
     const layoutClass = determineLayoutClass(selections, layout);
     container.className = `quiz ${layoutClass}`;
+    const captionDelay = stage === 'question' ? getCaptionDelaySeconds(question) : null;
+    if (captionDelay !== null) {
+        container.classList.add('caption-delay-enabled');
+        container.style.setProperty('--caption-delay', `${captionDelay}s`);
+    }
 
     const title = document.createElement('h1');
     const titleSpan = document.createElement('span');
@@ -39,7 +44,7 @@ export function renderQuestionSlide(question, { stage = 'question' } = {}) {
     const ol = document.createElement('ol');
     for (const value of Object.values(selections)) {
         const li = document.createElement('li');
-        appendSelectionContent(li, value, { stage });
+        appendSelectionContent(li, value, { stage, delayCaption: captionDelay !== null });
         ol.appendChild(li);
     }
     container.appendChild(ol);
@@ -136,6 +141,7 @@ export function renderSortQuestionSlide(question) {
     const container = document.createElement('div');
     const layout = question.layout || {};
     const selections = question.selections || {};
+    const captionDelay = getCaptionDelaySeconds(question);
 
     const hasImages = Object.values(selections).some(v =>
         isVisualMediaPath(v) || (Array.isArray(v) && isVisualMediaPath(v[0]))
@@ -145,6 +151,10 @@ export function renderSortQuestionSlide(question) {
     const typeClass = hasImages ? 'image-quiz' : 'text-quiz';
 
     container.className = `quiz sort ${typeClass} ${takuClass}`;
+    if (captionDelay !== null) {
+        container.classList.add('caption-delay-enabled');
+        container.style.setProperty('--caption-delay', `${captionDelay}s`);
+    }
 
     const title = document.createElement('h1');
     const titleSpan = document.createElement('span');
@@ -155,7 +165,7 @@ export function renderSortQuestionSlide(question) {
     const ol = document.createElement('ol');
     for (const value of Object.values(selections)) {
         const li = document.createElement('li');
-        appendSelectionContent(li, value, { stage: 'question' });
+        appendSelectionContent(li, value, { stage: 'question', delayCaption: captionDelay !== null });
         ol.appendChild(li);
     }
     container.appendChild(ol);
@@ -274,7 +284,7 @@ export function renderSortAnswerSlides(question) {
     });
 }
 
-export function appendSelectionContent(li, value, { stage = 'question' } = {}) {
+export function appendSelectionContent(li, value, { stage = 'question', delayCaption = false } = {}) {
     const source = getMediaSource(value);
     const label = getMediaLabel(value);
 
@@ -286,6 +296,9 @@ export function appendSelectionContent(li, value, { stage = 'question' } = {}) {
         if (label) {
             const caption = document.createElement('span');
             caption.className = 'caption';
+            if (delayCaption) {
+                caption.classList.add('caption-delayed');
+            }
             caption.textContent = label;
             li.appendChild(caption);
         }
@@ -351,6 +364,20 @@ function determineLayoutClass(selections, layout) {
     }
 
     return `${typeClass} ${takuClass}`;
+}
+
+function getCaptionDelaySeconds(question) {
+    const layout = question.layout || {};
+    const rawValue = question['caption-delay'] ?? question.caption_delay
+        ?? layout['caption-delay'] ?? layout.caption_delay;
+
+    if (rawValue === undefined || rawValue === null || rawValue === false) return null;
+    if (rawValue === true) return 1;
+
+    const delay = parseFloat(rawValue);
+    if (!Number.isFinite(delay)) return 1;
+
+    return Math.max(0, delay);
 }
 
 export { isImagePath } from './media.js';

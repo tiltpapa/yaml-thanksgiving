@@ -13,6 +13,7 @@ questions:
       - type: "select" #問題タイプ、select:選択, sort:並び替え, input:入力問題
       - large-image: "images/himawari.jpg" #選択肢と別の大きな画像（なくて良い）
       - mini-title: "どれが好き？"
+      - caption-delay: 1.5 #画像選択肢キャプションを遅れて出す（省略時は最初から表示）
     - selections:
       1: ["images/baseball.png", "野球"] #キャプションをつけたい場合はこのようにする
       2: "images/soccer.png"
