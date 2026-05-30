@@ -13,3 +13,6 @@ node_modules
 *.mov
 multiple.md
 config.js
+*.mp3
+*.m4a
+*.ogg

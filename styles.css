@@ -51,6 +51,12 @@ html, body {
   box-sizing: border-box;
 }
 
+.slide.has-custom-background::before,
+.slide.has-custom-background::after {
+  content: none;
+  display: none;
+}
+
 h1, h2, li {
   font-family: 'LINE Seed JP';
 }

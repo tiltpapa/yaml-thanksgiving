@@ -4,10 +4,13 @@ import { SlideController } from './slide-controller.js';
 import { QuaggaApiClient, summarizeAggregate } from './quagga-api.js';
 import { injectAnswerCounts, injectCorrectAnswerCount } from './result-renderer.js';
 import { buildBonusSlideStack, fetchBonusData, replaceBonusSlides } from './bonus-quiz.js';
+import { applySlideBackground } from './backgrounds.js';
+import { SlideAudioManager } from './audio-manager.js';
 
 async function init() {
     const container = document.getElementById('current-slide');
     const controller = new SlideController(container);
+    const audioManager = new SlideAudioManager();
 
     let quaggaApi = null;
     try {
@@ -21,6 +24,7 @@ async function init() {
     try {
         const quizData = await loadQuizYaml('quiz.yml');
         console.log('Loaded quiz data:', quizData);
+        const settings = quizData.settings || {};
 
         const slides = [];
 
@@ -131,6 +135,9 @@ async function init() {
             const totalH = slides.length;
             const totalV = slides[h]?.length || 0;
             console.log(`Slide [${h}/${v}] (${h + 1}/${totalH}, ${v + 1}/${totalV}): ${slide.type}`);
+
+            applySlideBackground(container, slide, settings);
+            audioManager.playForSlide(slide, settings);
 
             if (!quaggaApi) return;
 
