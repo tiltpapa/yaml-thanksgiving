@@ -73,6 +73,9 @@ questions:
   # text-6taku: テキスト6択
   # ===============================
   - title: "テキスト6択テスト"
+    lead-in:
+      text: "♪音楽"
+      audio: "sounds/question-special.mp3"
     layout:
       type: "select"
       mini-title: "好きなスポーツは？"
@@ -103,6 +106,8 @@ questions:
   # image-2taku: 画像2択（キャプション付き）
   # ===============================
   - title: "画像2択キャプション付き"
+    lead-in:
+      image: "images/lead-in.mp4"
     layout:
       type: "select"
       mini-title: "どちらが好き？"

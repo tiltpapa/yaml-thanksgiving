@@ -184,6 +184,10 @@ h1::before, li::before, li::after {
   background: #000;
 }
 
+.lead-in-audio {
+  display: none;
+}
+
 
 
 /* ===============================
