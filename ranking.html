@@ -169,11 +169,13 @@
         async function loadQuestionRanking(mode = 'top') {
             try {
                 const data = await api.getLastAggregate();
-                const results = rankQuestionAnswers(data.answers ?? []);
+                const answers = data.answers ?? [];
+                const results = rankQuestionAnswers(answers);
+                const correctResults = rankQuestionAnswers(answers.filter(answer => answer.correct === true));
                 const commonOpts = { showPoint: false, reveal: true };
 
                 if (mode === 'worst') {
-                    const worstResults = results.slice(-10);
+                    const worstResults = correctResults.slice(-10);
                     const lastRank = worstResults.at(-1)?.rank;
 
                     buildPages('問題ランキング ワースト10', worstResults, {
@@ -194,7 +196,7 @@
                     return;
                 }
 
-                buildPages('問題ランキング トップ10', results.slice(0, 10), {
+                buildPages('問題ランキング トップ10', correctResults.slice(0, 10), {
                     ...commonOpts,
                     limit: 10,
                     manualRanks: [1],
