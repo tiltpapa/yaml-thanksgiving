@@ -18,12 +18,12 @@
 /* タイトル（縦書き・右側固定配置） */
 .ranking-slide .ranking-title {
     position: absolute;
-    right: 50px;
+    right: 100px;
     top: 50%;
     transform: translateY(-50%);
     writing-mode: vertical-rl;
     text-orientation: upright;
-    width: 80px;
+    width: 100px;
     height: 480px;
     max-height: 520px;
     margin: 0;
@@ -31,7 +31,7 @@
     color: #003366;
     border-radius: 12px;
     padding: 24px 12px;
-    font-size: 1.4em;
+    font-size: 1.6em;
     font-weight: normal;
     line-height: 1.4;
     text-align: center;
@@ -51,8 +51,8 @@
 .ranking-slide .ranking-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-    width: 100%;
+    margin-left: 80px;
+    width: 80%;
     perspective: 1000px;
 }
 
@@ -64,14 +64,14 @@
     border-radius: 16px;
     padding: 8px 180px 8px 70px;
     margin-bottom: 6px;
-    font-size: 1.1em;
+    font-size: 1.4em;
     font-weight: normal;
     text-align: left;
     box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.2), 0 3px 6px rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
     gap: 16px;
-    min-height: 40px;
+    height: 50px;
     transform-style: preserve-3d;
 }
 
@@ -83,19 +83,19 @@
     transform: translateY(-50%);
     width: 42px;
     height: 42px;
-    border-radius: 50%;
-    background: #3498db;
+/*    border-radius: 50%; */ 
+/*    background: #3498db; */ 
     color: #fff;
     font-weight: 700;
-    font-size: 1.1em;
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+    font-size: 1.4em;
+/*    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); */
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:
+/*    box-shadow:
         inset 0 2px 3px rgba(255, 255, 255, 0.4),
         inset 0 -2px 5px rgba(0, 0, 0, 0.35),
-        0 1px 2px rgba(0, 0, 0, 0.4);
+        0 1px 2px rgba(0, 0, 0, 0.4); */
 }
 
 /* 名前 */
@@ -109,7 +109,7 @@
 /* ポイント表示 */
 .ranking-slide .rank-point {
     position: absolute;
-    right: 100px;
+    right: 140px;
     top: 50%;
     transform: translateY(-50%);
     background: linear-gradient(to right, #cccccc, #ffffff 30%);
@@ -118,7 +118,7 @@
     border: 3px inset #000;
     min-width: 50px;
     color: #003366;
-    font-size: 1em;
+    font-size: 1.0em;
     font-weight: 700;
     text-align: center;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
@@ -134,7 +134,7 @@
     min-width: 70px;
     text-align: right;
     color: #fff;
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
@@ -152,7 +152,7 @@
     background: linear-gradient(#8B6914, #D4AF37);
     border-color: #FFD700;
 }
-
+/*
 .ranking-slide .ranking-item.rank-1 .rank-number {
     background: linear-gradient(#FFD700, #FFA500);
     color: #000;
@@ -179,7 +179,7 @@
     background: linear-gradient(#CD7F32, #8B4513);
     color: #fff;
 }
-
+*/
 .ranking-slide .ranking-item.rank-worst {
     background: linear-gradient(#3a0014, #b00035);
     border-color: #ff5c87;
@@ -188,12 +188,12 @@
         0 0 18px rgba(255, 68, 120, 0.45),
         0 3px 6px rgba(0, 0, 0, 0.45);
 }
-
+/*
 .ranking-slide .ranking-item.rank-worst .rank-number {
     background: linear-gradient(#ff7a99, #c9003f);
     color: #fff;
 }
-
+*/
 /* ===============================
    フリップアニメーション
 ================================ */
