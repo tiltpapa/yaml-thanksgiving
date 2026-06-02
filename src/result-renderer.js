@@ -51,7 +51,7 @@ function formatRankingTime(time) {
   if (!Number.isFinite(seconds)) return '';
 
   if (seconds < 60) {
-    return seconds.toFixed(2).padStart(5, '0');
+    return seconds.toFixed(2);
   }
 
   const minutes = Math.floor(seconds / 60);
