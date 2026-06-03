@@ -70,6 +70,7 @@ function formatRankingTime(time) {
 export function renderRankingList(results, { limit = 10, showPoint = true, reveal = false } = {}) {
   const ol = document.createElement('ol');
   ol.className = 'ranking-list';
+  ol.style.setProperty('--limit', limit);
 
   const slice = results.slice(0, limit);
 
