@@ -22,7 +22,8 @@ async function init() {
     }
 
     try {
-        const quizData = await loadQuizYaml('quiz.yml');
+        const quizFile = window.QUIZ_FILE || 'quiz.yml';
+        const quizData = await loadQuizYaml(quizFile);
         console.log('Loaded quiz data:', quizData);
         const settings = quizData.settings || {};
 
