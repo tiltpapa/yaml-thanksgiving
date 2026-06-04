@@ -54,6 +54,7 @@
     margin-left: 80px;
     width: 80%;
     perspective: 1000px;
+    min-height: calc(var(--limit, 10) * 55px - 6px);
 }
 
 /* 各ランキング項目 */

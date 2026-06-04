@@ -51,7 +51,7 @@ function formatRankingTime(time) {
   if (!Number.isFinite(seconds)) return '';
 
   if (seconds < 60) {
-    return seconds.toFixed(2).padStart(5, '0');
+    return seconds.toFixed(2);
   }
 
   const minutes = Math.floor(seconds / 60);
@@ -70,6 +70,7 @@ function formatRankingTime(time) {
 export function renderRankingList(results, { limit = 10, showPoint = true, reveal = false } = {}) {
   const ol = document.createElement('ol');
   ol.className = 'ranking-list';
+  ol.style.setProperty('--limit', limit);
 
   const slice = results.slice(0, limit);
 
