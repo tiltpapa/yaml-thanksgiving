@@ -6,7 +6,7 @@
  * 例: node extract-last-frame.js images/sample.mp4 images/sample2.mp4
  */
 
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -24,7 +24,8 @@ if (videoFiles.length === 0) {
 
 // ffmpegがインストールされているか確認
 try {
-    execSync('ffmpeg -version', { stdio: 'ignore' });
+    const check = spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+    if (check.error) throw check.error;
 } catch (error) {
     console.error('エラー: ffmpegがインストールされていません。');
     console.error('インストール方法:');
@@ -55,12 +56,22 @@ videoFiles.forEach((videoPath) => {
         console.log(`処理中: ${videoPath}`);
         
         // ffmpegで最終フレームを抽出
-        // -sseof -1: 終了の1秒前から開始
+        // -sseof -0.2: 終了の0.2秒前から開始
         // -frames:v 1: 1フレームのみ抽出
-        execSync(
-            `ffmpeg -sseof -0.2 -i "${videoPath}" -update 1 -frames:v 1 "${outputPath}" -y`,
-            { stdio: 'ignore' }
+        // spawnSync を使いシェルを介さず直接実行することで、
+        // 全角・マルチバイト文字を含むパスも文字化けせず渡せる
+        const result = spawnSync(
+            'ffmpeg',
+            ['-sseof', '-0.2', '-i', videoPath, '-update', '1', '-frames:v', '1', outputPath, '-y'],
+            { stdio: 'ignore', encoding: 'buffer' }
         );
+
+        if (result.error) {
+            throw result.error;
+        }
+        if (result.status !== 0) {
+            throw new Error(`ffmpeg がステータスコード ${result.status} で終了`);
+        }
         
         console.log(`✓ 完了: ${outputPath}\n`);
         successCount++;
