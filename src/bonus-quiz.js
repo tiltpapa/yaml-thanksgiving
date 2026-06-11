@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ????????????????????
  * API????????????DOM??
  */
@@ -7,6 +7,7 @@ import {
     createMediaElement,
     isVisualMediaPath,
 } from './media.js';
+import { applyFormatText } from './text-format.js';
 
 const SYMBOLS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -104,13 +105,6 @@ function resolveQuizClasses(question, itemCount) {
     };
 }
 
-function formatCaptionHtml(text) {
-    return String(text).replace(
-        /\*([^*]+)\*/g,
-        '<strong class="caption-highlight">$1</strong>'
-    );
-}
-
 /** ?????????????????????????????????? */
 function appendChampionChoiceItem(li, value, hasImages) {
     if (hasImages) {
@@ -150,7 +144,7 @@ function appendBonusRevealItem(li, item, hasImages, revealed) {
         if (caption) {
             const cap = document.createElement('span');
             cap.className = 'sort-caption';
-            cap.innerHTML = formatCaptionHtml(caption);
+            applyFormatText(cap, caption);
             li.appendChild(cap);
         }
     } else {
@@ -159,7 +153,7 @@ function appendBonusRevealItem(li, item, hasImages, revealed) {
         if (caption) {
             const cap = document.createElement('span');
             cap.className = 'answer-caption';
-            cap.innerHTML = formatCaptionHtml(caption);
+            applyFormatText(cap, caption);
             li.appendChild(cap);
         }
     }

@@ -4,6 +4,7 @@ import {
     getMediaSource,
     isVisualMediaPath,
 } from './media.js';
+import { applyFormatText } from './text-format.js';
 
 export function createAnswerCountTimer() {
     const timer = document.createElement('div');
@@ -98,10 +99,7 @@ export function renderCaptionSlide(question) {
 
         const captionEl = document.createElement('span');
         captionEl.className = 'answer-caption';
-        captionEl.innerHTML = String(captionText).replace(
-            /\*([^*]+)\*/g,
-            '<strong class="caption-highlight">$1</strong>'
-        );
+        applyFormatText(captionEl, captionText);
         li.appendChild(captionEl);
     });
 
@@ -250,10 +248,7 @@ export function renderSortAnswerSlides(question) {
                 if (item.caption) {
                     const cap = document.createElement('span');
                     cap.className = 'sort-caption';
-                    cap.innerHTML = String(item.caption).replace(
-                        /\*([^*]+)\*/g,
-                        '<strong class="caption-highlight">$1</strong>'
-                    );
+                    applyFormatText(cap, item.caption);
                     li.appendChild(cap);
                 }
             } else {
@@ -263,10 +258,7 @@ export function renderSortAnswerSlides(question) {
                 if (item.caption) {
                     const cap = document.createElement('span');
                     cap.className = 'answer-caption';
-                    cap.innerHTML = String(item.caption).replace(
-                        /\*([^*]+)\*/g,
-                        '<strong class="caption-highlight">$1</strong>'
-                    );
+                    applyFormatText(cap, item.caption);
                     li.appendChild(cap);
                 }
             }

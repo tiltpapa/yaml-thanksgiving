@@ -149,6 +149,17 @@ h1::before, li::before, li::after {
   font-weight: 700;
 }
 
+/* 半角スペース2つの改行で挿入されるスペーサー */
+.spacer {
+  display: block;
+  height: 10px;
+}
+
+/* 改行（spacer）を含むテキストのフォントサイズ縮小 */
+.text-multiline {
+  font-size: 80%;
+}
+
 
 .lead-in-slide {
   display: flex;
