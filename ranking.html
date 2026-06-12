@@ -74,20 +74,36 @@
                 return;
             }
 
+            const chunks = [];
             for (let i = 0; i < results.length; i += limit) {
-                const page = renderRankingSlide(title, results.slice(i, i + limit), {
+                chunks.push(results.slice(i, i + limit));
+            }
+
+            // データは常に降順（1位が先頭）。pageOrder:'desc' はページ表示順の制御であり
+            // データ上の最上位チャンクは常に chunks[0]
+            const topChunkIndex = 0;
+
+            chunks.forEach((chunk, chunkIndex) => {
+                const isTopChunk = chunkIndex === topChunkIndex;
+
+                const page = renderRankingSlide(title, chunk, {
                     limit,
                     showPoint: opts.showPoint,
                     reveal: opts.reveal ?? true,
+                    applyTopStyle: isTopChunk ? (opts.applyTopStyle ?? true) : false,
                 });
-                page.dataset.manualRanks = (opts.manualRanks ?? []).join(',');
+
+                // manualRanks・worst は最上位チャンクのみ適用
+                page.dataset.manualRanks = (isTopChunk ? (opts.manualRanks ?? []) : []).join(',');
                 page.dataset.reveal = String(opts.reveal ?? true);
                 page.dataset.revealOrder = opts.revealOrder ?? 'desc';
-                if (opts.markLastAsWorst) {
+
+                if (isTopChunk && opts.markLastAsWorst) {
                     page.querySelector('.ranking-item:last-child')?.classList.add('rank-worst');
                 }
+
                 pages.push(page);
-            }
+            });
 
             if (opts.pageOrder === 'desc') {
                 pages.reverse();
@@ -182,6 +198,7 @@
                         ...commonOpts,
                         limit: 10,
                         revealOrder: 'asc',
+                        applyTopStyle: false,
                         manualRanks: lastRank == null ? [] : [lastRank],
                         markLastAsWorst: true,
                     });
@@ -192,6 +209,7 @@
                     buildPages('問題ランキング 全体', results, {
                         ...commonOpts,
                         revealOrder: 'asc',
+                        applyTopStyle: false,
                     });
                     return;
                 }

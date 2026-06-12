@@ -65,9 +65,10 @@ function formatRankingTime(time) {
  * @param {object[]} results  Quagga API の results 配列
  * @param {object}   [opts]
  * @param {number}   [opts.limit=10]  表示件数
+ * @param {boolean}  [opts.applyTopStyle=true]  rank-1 の特別スタイルを適用するか
  * @returns {HTMLElement}  <ol class="ranking-list">
  */
-export function renderRankingList(results, { limit = 10, showPoint = true, reveal = false } = {}) {
+export function renderRankingList(results, { limit = 10, showPoint = true, reveal = false, applyTopStyle = true } = {}) {
   const ol = document.createElement('ol');
   ol.className = 'ranking-list';
   ol.style.setProperty('--limit', limit);
@@ -76,7 +77,9 @@ export function renderRankingList(results, { limit = 10, showPoint = true, revea
 
   slice.forEach((result) => {
     const li = document.createElement('li');
-    li.className = `ranking-item rank-${result.rank}`;
+    // rank-1 スタイルは applyTopStyle が true のときのみ付与
+    const rankClass = (result.rank === 1 && !applyTopStyle) ? '' : `rank-${result.rank}`;
+    li.className = `ranking-item${rankClass ? ` ${rankClass}` : ''}`;
     li.dataset.rank = String(result.rank);
     if (reveal) li.classList.add('reveal-pending');
 
@@ -115,6 +118,7 @@ export function renderRankingList(results, { limit = 10, showPoint = true, revea
  * @param {object[]} results  Quagga API の results 配列
  * @param {object}   [opts]
  * @param {number}   [opts.limit=10]
+ * @param {boolean}  [opts.applyTopStyle=true]  rank-1 の特別スタイルを適用するか
  * @returns {HTMLElement}
  */
 export function renderRankingSlide(title, results, opts = {}) {
