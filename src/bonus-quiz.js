@@ -107,6 +107,8 @@ function resolveQuizClasses(question, itemCount) {
 
 /** ?????????????????????????????????? */
 function appendChampionChoiceItem(li, value, hasImages) {
+    // ::before バッジを非表示にするクラスを付与
+    li.classList.add('no-badge');
     if (hasImages) {
         li.classList.add('champion-choice-row');
         const media = createMediaElement(value, { stage: 'answer', alt: Array.isArray(value) ? value[1] || '' : '' });
@@ -275,12 +277,6 @@ export function renderBonusRevealSlides(question, championAnswer) {
         container.className =
             `answer sort bonus-reveal ${typeClass} ${sortTaku} ${champTaku}`;
 
-        const title = document.createElement('h1');
-        const titleSpan = document.createElement('span');
-        titleSpan.textContent = revealSlideTitle(layout, question);
-        title.appendChild(titleSpan);
-        container.appendChild(title);
-
         const bonusWrap = document.createElement("div");
         bonusWrap.className = 'bonus-reveal-layout';
 
@@ -291,23 +287,39 @@ export function renderBonusRevealSlides(question, championAnswer) {
         }
 
         const crownSmall = document.createElement("div");
-        crownSmall.className = 'crown-icon crown-icon--compact';
+        crownSmall.className = 'crown-icon';
         symbolCol.appendChild(crownSmall);
 
         const symbolsStack = document.createElement("div");
-        symbolsStack.className = 'answer-symbols answer-symbols--compact';
-        for (let i = 0; i < revealCount; i++) {
+        symbolsStack.className = 'answer-symbols';
+        for (let i = 0; i < count; i++) {
             const choiceNum = championAnswer[i];
             const sym = document.createElement("div");
             sym.className = 'symbol-item';
             sym.textContent = badgeForKey(selectionKeys, choiceNum);
             sym.dataset.color = String(choiceNum);
-            if (choiceNum !== correctOrder[i]) {
-                sym.classList.add('symbol-wrong');
+            if (i < revealCount) {
+                // 答え合わせ済み: 正誤判定
+                if (choiceNum !== correctOrder[i]) {
+                    sym.classList.add('symbol-wrong');
+                }
+            } else {
+                // 未開示: 薄く表示
+                sym.classList.add('symbol-pending');
             }
             symbolsStack.appendChild(sym);
         }
         symbolCol.appendChild(symbolsStack);
+
+        // 右列: h1 + ol をまとめるコンテナ
+        const rightCol = document.createElement("div");
+        rightCol.className = 'bonus-reveal-right';
+
+        const title = document.createElement('h1');
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = revealSlideTitle(layout, question);
+        title.appendChild(titleSpan);
+        rightCol.appendChild(title);
 
         const ol = document.createElement('ol');
         orderedItems.forEach((item, index) => {
@@ -321,8 +333,9 @@ export function renderBonusRevealSlides(question, championAnswer) {
             ol.appendChild(li);
         });
 
+        rightCol.appendChild(ol);
         bonusWrap.appendChild(symbolCol);
-        bonusWrap.appendChild(ol);
+        bonusWrap.appendChild(rightCol);
         container.appendChild(bonusWrap);
 
         return container;

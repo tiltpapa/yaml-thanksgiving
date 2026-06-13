@@ -15,7 +15,8 @@
         "list_pages",
         "list_console_messages",
         "get_console_message",
-        "list_network_requests"
+        "list_network_requests",
+        "evaluate_script"
       ]
     },
     "reveal-thanksgiving": {

@@ -3,48 +3,43 @@
    並び替え正解 + チャンピオン記号の横並び
 ================================ */
 
+/* ===============================
+   答え合わせスライド: グリッドレイアウト
+   左列: 記号 (140px固定) / 右列: 選択肢リスト (残り全幅)
+================================ */
 .bonus-reveal-layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 24px;
-  width: 920px;
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: start;
+  gap: 16px;
+  width: 900px;
   max-width: 100%;
   margin: 0 auto;
-  padding-top: 24px;
+  padding-top: 16px;
 }
 
+/* 右列の ol: 外部CSSの幅・マージン指定を上書き（詳細度を上げて確実に適用） */
+.answer.sort.bonus-reveal .bonus-reveal-layout ol {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   左列: 記号コンテナ
+================================ */
 .bonus-champion-symbols {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 120px;
-  flex-shrink: 0;
-  padding-top: 48px;
+  width: 140px;
+  /* h1（100px）+ margin-bottom（8px）分だけ下にずらしてolと縦位置を揃える */
+  padding-top: 108px;
 }
 
 .bonus-champion-symbols.grayscale {
   filter: grayscale(100%);
-}
-
-.crown-icon--compact {
-  width: 56px;
-  height: 48px;
-  margin-bottom: 8px;
-}
-
-.answer-symbols--compact {
-  gap: 6px;
-}
-
-.answer-symbols--compact::before {
-  width: 36px;
-}
-
-.answer-symbols--compact .symbol-item {
-  width: 48px;
-  height: 48px;
-  font-size: 1.35em;
 }
 
 .symbol-item.symbol-wrong {
@@ -54,25 +49,26 @@
     0 0 0 3px #ff4444;
 }
 
+/* 未開示: 色なし・半透明 */
+.symbol-item.symbol-pending {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.1);
+}
+
 .answer.sort.bonus-reveal h1 {
-  margin-bottom: 0;
+  margin-bottom: 8px;
+  /* text-quiz.css の margin-left: 240px を打ち消す */
+  margin-left: 0;
+  margin-right: auto;
+  box-sizing: border-box;
 }
 
-.answer.sort.bonus-reveal .bonus-reveal-layout ol {
-  flex: 1;
+/* 右列コンテナ */
+.bonus-reveal-right {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-}
-
-.champion-6taku .answer-symbols--compact .symbol-item {
-  width: 40px;
-  height: 40px;
-  font-size: 1.1em;
-}
-
-.champion-2taku .answer-symbols--compact .symbol-item {
-  width: 64px;
-  height: 64px;
-  font-size: 1.8em;
 }
 
 .bonus-error {
@@ -90,15 +86,31 @@
 /* チャンピオンスライド: 回答スライドと同じ h1、champion-right は champion.css を利用 */
 .champion-answer.answer .champion-container {
   margin-top: 8px;
+  /* gridレイアウトで記号列と選択肢列を揃える */
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: start;
+  width: 900px;
+  gap: 16px;
+}
+
+/* champion.css の flex 設定を上書き */
+.champion-answer.answer .champion-left {
+  width: auto;
+}
+
+.champion-answer.answer .champion-right {
+  padding-top: 0;
 }
 
 /* 左に記号があるため右列のバッジ（::before）を非表示 */
-.bonus-champion .champion-choices li::before {
-  content: none !important
+.bonus-champion .champion-choices li::before,
+.bonus-champion .champion-choices li.champion-choice-row::before {
+  display: none !important;
 }
 
 .bonus-champion .champion-choices li {
-  padding-left: 24px !important;
+  padding-left: 24px;
 }
 
 /* チャンピオン回答・画像: サムネ＋ラベル（問題スライドの .caption バッジは使わない） */
