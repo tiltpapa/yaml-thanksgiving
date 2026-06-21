@@ -73,8 +73,10 @@ export function renderAnswerSlide(question) {
     const answer = question.answer || {};
     const correctAnswers = answer.answer || [];
 
-    if (Array.isArray(correctAnswers) && correctAnswers.length === 1) {
-        container.classList.add(`maru-${correctAnswers[0]}`);
+    if (Array.isArray(correctAnswers)) {
+        for (const key of correctAnswers) {
+            container.classList.add(`maru-${key}`);
+        }
     }
 
     return container;
