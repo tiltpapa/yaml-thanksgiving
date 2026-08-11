@@ -20,21 +20,21 @@ export function parseAnswerOrder(answerStr) {
         .filter(n => !Number.isNaN(n));
 }
 
-/** last_aggregate ?????????????? */
+/** last_aggregate からチャンピオンの回答を抽出する */
 export function extractChampionAnswer(aggregate, championUserId) {
     const answers = aggregate?.answers;
-    if (!answers?.length) return null;
+    const choiceNumber = aggregate?.question?.choice_number;
 
-    let entry = null;
-    if (championUserId != null) {
-        entry = answers.find(a => a.member?.user?.id === championUserId);
+    if (!answers?.length || championUserId == null) {
+        console.warn('[Bonus] チャンピオン回答未取得、ゼロ埋めを使用');
+        return choiceNumber ? new Array(choiceNumber).fill(0) : null;
     }
 
+    const entry = answers.find(a => a.member?.user?.id === championUserId);
+
     if (!entry) {
-        entry = answers.reduce((earliest, current) =>
-            parseFloat(current.time) < parseFloat(earliest.time) ? current : earliest
-        );
-        console.warn('[Bonus] \u30c1\u30e3\u30f3\u30d4\u30aa\u30f3\u56de\u7b54\u672a\u691c\u51fa\u3001\u6700\u901f\u56de\u7b54\u3092\u63a1\u7528');
+        console.warn('[Bonus] チャンピオン回答未検出、ゼロ埋めを使用');
+        return choiceNumber ? new Array(choiceNumber).fill(0) : null;
     }
 
     return parseAnswerOrder(entry.answer);
