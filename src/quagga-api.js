@@ -133,7 +133,12 @@ export class QuaggaApiClient {
 
     const url = `${this.base}${path}`;
     const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${this.token}` },
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        'Cache-Control': 'no-cache, no-store',
+        'Pragma': 'no-cache',
+      },
+      cache: 'no-store',
     });
 
     if (!res.ok) {
