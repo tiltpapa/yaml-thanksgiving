@@ -378,3 +378,19 @@ h1::before, li::before, li::after {
     text-align: center;
 }
 
+/* 次のスライド */
+.next-guide {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75em;
+    padding: 6px 16px;
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 100;
+}

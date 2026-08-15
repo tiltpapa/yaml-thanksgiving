@@ -132,7 +132,37 @@ async function init() {
             return stats;
         };
 
+        const nextGuideEl = document.getElementById('next-guide');
+
+        const updateNextGuide = (h, v) => {
+            if (!nextGuideEl) return;
+
+            // スペース/Enter の next() と同じ縦優先ロジック
+            const currentGroup = slides[h];
+            let nextSlide = null;
+            if (currentGroup && v + 1 < currentGroup.length) {
+                nextSlide = currentGroup[v + 1];
+            } else if (h + 1 < slides.length) {
+                nextSlide = slides[h + 1]?.[0];
+            }
+
+            if (!nextSlide) {
+                nextGuideEl.hidden = true;
+                return;
+            }
+
+            const label = getNextSlideLabel(nextSlide);
+            if (!label) {
+                nextGuideEl.hidden = true;
+                return;
+            }
+
+            nextGuideEl.textContent = `Next: ${label}`;
+            nextGuideEl.hidden = false;
+        };
+
         controller.onSlideChange = async (h, v, slide) => {
+            updateNextGuide(h, v);
             const totalH = slides.length;
             const totalV = slides[h]?.length || 0;
             console.log(`Slide [${h}/${v}] (${h + 1}/${totalH}, ${v + 1}/${totalV}): ${slide.type}`);
@@ -201,3 +231,26 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+/**
+ * 次のスライドのラベルテキストを生成
+ * 優先順位: h1 > h2 > メディア（src/data-src）のパス
+ */
+function getNextSlideLabel(nextSlide) {
+    const el = nextSlide.element;
+    if (!el) return null;
+
+    const h1 = el.querySelector('h1');
+    if (h1?.textContent.trim()) return h1.textContent.trim();
+
+    const h2 = el.querySelector('h2');
+    if (h2?.textContent.trim()) return h2.textContent.trim();
+
+    const media = el.querySelector('img, video, audio');
+    if (media) {
+        const src = media.src || media.dataset.src || media.currentSrc || '';
+        if (src) return src.split('/').pop();
+    }
+
+    return null;
+}
